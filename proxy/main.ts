@@ -18,6 +18,7 @@ fastify.register(fastifyProxy, {
 if(process.env.ENVIRONMENT === "DEV"){
 	fastify.register(fastifyProxy, {
 		upstream: "http://vue:80",
+		websocket: true,
 	});
 }
 else if(process.env.ENVIRONMENT === "PROD"){
