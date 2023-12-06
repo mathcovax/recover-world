@@ -1,0 +1,52 @@
+version: "3.7"
+services:
+  installer:
+    image: node:20.10.0-alpine
+    volumes:
+      - ./:/home/node/recover-world
+    environment:
+      npm_config_cache: /home/node/cache
+    working_dir: /home/node/recover-world
+    user: 1000:1000
+    command: npm i
+
+  duplojs:
+    image: node:20.10.0-alpine
+    volumes:
+      - ./:/home/node/recover-world
+    environment:
+      npm_config_cache: /home/node/cache
+    working_dir: /home/node/recover-world
+    user: 1000:1000
+    command: npm run dev-duplojs
+    depends_on:
+      installer:
+        condition: service_completed_successfully
+    
+  vue:
+    image: node:20.10.0-alpine
+    volumes:
+      - ./:/home/node/recover-world
+    environment:
+      npm_config_cache: /home/node/cache
+    working_dir: /home/node/recover-world
+    user: 1000:1000
+    command: npm run dev-vue
+    depends_on:
+      installer:
+        condition: service_completed_successfully
+  
+  proxy:
+    image: node:20.10.0-alpine
+    volumes:
+      - ./:/home/node/recover-world
+    environment:
+      npm_config_cache: /home/node/cache
+    working_dir: /home/node/recover-world
+    user: 1000:1000
+    command: npm run dev-proxy
+    ports:
+      - 1506:80
+    depends_on:
+      installer:
+        condition: service_completed_successfully

@@ -1,0 +1,19 @@
+{
+	"scripts": {
+		"dev": "nodemon --exec 'node --require sucrase/register main.ts'",
+		"dev-debug": "nodemon --exec 'ts-node main.ts'",
+		"start": "node --require sucrase/register main.ts",
+		"lint": "eslint --fix **/**.ts"
+	},
+	"dependencies": {
+		"@duplojs/duplojs": "0.13.23",
+		"@duplojs/routes-directory": "0.2.2",
+		"@duplojs/type-input": "0.1.0",
+		"@duplojs/destruct-floor": "0.1.2",
+		"@duplojs/http-exception": "0.1.0"
+	},
+	"nodemonConfig": {
+		"ext": ".ts"
+	}
+}
+  

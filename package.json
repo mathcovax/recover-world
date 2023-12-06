@@ -1,0 +1,30 @@
+{
+  "name": "recover-world",
+  "version": "0.0.0",
+  "workspaces": [
+    "duplojs",
+    "vue",
+    "proxy"
+  ],
+  "scripts": {
+    "dev": "docker compose up",
+    "dev-duplojs": "npm -w duplojs run dev",
+    "dev-vue": "npm -w vue run dev",
+    "dev-proxy": "npm -w proxy run dev"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+	"@types/node": "^18.15.11",
+	"@typescript-eslint/eslint-plugin": "^6.0.0",
+	"@typescript-eslint/parser": "^6.0.0",
+	"autocannon": "^7.11.0",
+	"eslint": "^8.45.0",
+	"nodemon": "^3.0.1",
+	"sucrase": "^3.34.0",
+	"ts-node": "^10.9.1",
+	"tslib": "^2.5.0",
+	"typescript": "^5.0.2"
+  }
+}
