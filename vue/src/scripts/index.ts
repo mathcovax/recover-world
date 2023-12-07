@@ -1,8 +1,8 @@
 import {MyThree} from "./Three/MyThree";
 import {FBXLoader} from "./Three/FBXLoader";
-import {MainCharacter} from "./Three/MainCharacter";
-
-const myThree = new MyThree("#scene");
+import {Map} from "./Three/Map";
+import {Character} from "./Three/Character";
+import {Controller} from "./Controller";
 
 const models = await FBXLoader({
 	y_bot: "/models/Y_Bot.fbx"
@@ -12,14 +12,18 @@ const motions = await FBXLoader({
 	standing: "/motions/Standing_W_Briefcase_Idle.fbx"
 });
 
-const character = new MainCharacter(models["y_bot"], motions);
+const myThree = new MyThree("#scene");
+const map = new Map(myThree);
 
-myThree.addCharacter(character);
-
+const character = new Character(models["y_bot"], motions);
 character.launchMotion("standing");
 
-character.setRotate(Math.PI);
-console.log(character.getPos(), character.getRotate(), Math.PI);
+const controller = new Controller(myThree, character);
+controller.enable();
 
-console.log(character);
+map.addCharacter(character);
+map.init();
+
+// console.log(character.getPos(), character.getRotate(), Math.PI);
+// console.log(character);
 
