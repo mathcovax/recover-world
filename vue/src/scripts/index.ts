@@ -1,7 +1,7 @@
+import * as THREE from "three";
 import {MyThree} from "./Three/MyThree";
 import {FBXLoader} from "./Three/FBXLoader";
 import {Character} from "./Three/Character";
-import {Controller} from "./Three/Controller";
 
 const models = await FBXLoader({
 	y_bot: "/models/Y_Bot.fbx"
@@ -18,7 +18,15 @@ const character = new Character(models["y_bot"], motions);
 character.launchMotion("standing");
 myThree.addCharacter(character);
 
-const controller = new Controller(myThree, character);
+const controller = myThree.createController(character);
+controller.hooks.onStartMove.addSubscriber(() => character.launchMotion("run"));
+controller.hooks.onStopMove.addSubscriber(() => character.launchMotion("standing"));
+
+const cube = new THREE.Mesh(
+	new THREE.BoxGeometry(100, 1, 100),
+	new THREE.MeshLambertMaterial()
+);
+myThree.addModel(cube);
 
 myThree.startRender();
 

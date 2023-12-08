@@ -2,6 +2,7 @@ import * as THREE from "three";
 import {FBXLoader} from "three/examples/jsm/Addons.js";
 import {Hook} from "../Hook";
 import {Character} from "./Character";
+import {Controller} from "./Controller";
 
 export class MyThree{
 	constructor(query: string){
@@ -57,7 +58,7 @@ export class MyThree{
 	private started = false;
 	private characters: Character[] = [];
 
-	addModel(model: THREE.Group<THREE.Object3DEventMap>){
+	addModel(model: THREE.Object3D<THREE.Object3DEventMap>){
 		this.scene.add(model);
 	}
 
@@ -116,6 +117,11 @@ export class MyThree{
 			const dt = char.clock.getDelta();
 			char.getMixer().update(dt);
 		});
+	}
+
+	createController(character: Character){
+		if(!this.characters.find(char => char === character)) throw new Error();
+		return new Controller(this, character);
 	}
 
 	private static loaderFBX = new FBXLoader();

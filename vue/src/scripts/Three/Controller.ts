@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import {Character} from "./Character";
 import {MyThree} from "./MyThree";
+import {Hook} from "../Hook";
 
 export class Controller{
 	constructor(myThree: MyThree, character: Character){
@@ -62,6 +63,13 @@ export class Controller{
 	private speed = 0;
 	private speedClock: THREE.Clock;
 	private speedDelta = 0.007;
+	private speedRotate = 0.08;
+
+	hooks = {
+		onStartMove: new Hook(0),
+		onStopMove: new Hook(0),
+		onClick: new Hook<(rotate: number, x: number, y: number) => void>(3),
+	};
 
 	delete(){
 		window.removeEventListener("click", this.functionOnClick);
@@ -78,13 +86,15 @@ export class Controller{
 
 	private onClick(event: MouseEvent){
 		if(!this.character) throw new Error();
-		if(controllerUtils.isInActions(this.pressedActions)) return;
 		const x = event.x - this.computed.midWidth;
 		const y = event.y - this.computed.midHeight;
 
 		let rotate = Math.atan(x / y);
 		if(y >= 0) rotate += Math.PI;
-		
+
+		this.hooks.onClick.launchSubscriber(rotate, x, y);
+
+		if(controllerUtils.isInActions(this.pressedActions)) return;
 		this.rotateTo = rotate + this.computed.gapRotate;
 	}
 
@@ -94,8 +104,12 @@ export class Controller{
 		if(action === undefined || this.pressedActions[action] === true) return;
 		this.pressedActions[action] = true;
 
-		this.character.launchMotion("run");
+		if(controllerUtils.hasContradictoryActions(this.pressedActions)){
+			this.hooks.onStopMove.launchSubscriber();
+			return;
+		}
 
+		this.hooks.onStartMove.launchSubscriber();
 		this.rotateTo = controllerUtils.getRotateFromPressedActions(this.pressedActions) || this.rotateTo;
 	}
 
@@ -105,35 +119,46 @@ export class Controller{
 		if(action === undefined) return;
 		this.pressedActions[action] = false;
 
-		if(!controllerUtils.isInActions(this.pressedActions)) this.character.launchMotion("standing");
-		else this.rotateTo = controllerUtils.getRotateFromPressedActions(this.pressedActions) || this.rotateTo;
+		if(!controllerUtils.isInActions(this.pressedActions)){
+			this.hooks.onStopMove.launchSubscriber();
+		}
+		else {
+
+			if(controllerUtils.hasContradictoryActions(this.pressedActions)){
+				this.hooks.onStopMove.launchSubscriber();
+				return;
+			}
+
+			this.hooks.onStartMove.launchSubscriber();
+			this.rotateTo = controllerUtils.getRotateFromPressedActions(this.pressedActions) || this.rotateTo;
+		}
 	}
 
 	private onRenderFrame(){
 		const delta = this.speedClock.getDelta();
 		const {up, down, left, right} = this.pressedActions;
 
-		if(up && !down && !left && !right) this.character.X += this.computedSpeed(delta, this.speed);
-		else if(!up && down && !left && !right) this.character.X -= this.computedSpeed(delta, this.speed);
-		else if(!up && !down && !left && right) this.character.Z += this.computedSpeed(delta, this.speed);
-		else if(!up && !down && left && !right) this.character.Z -= this.computedSpeed(delta, this.speed);
+		if(up && !down && !left && !right) this.character.X += controllerUtils.computedSpeed(delta, this.speed, this.speedDelta);
+		else if(!up && down && !left && !right) this.character.X -= controllerUtils.computedSpeed(delta, this.speed, this.speedDelta);
+		else if(!up && !down && !left && right) this.character.Z += controllerUtils.computedSpeed(delta, this.speed, this.speedDelta);
+		else if(!up && !down && left && !right) this.character.Z -= controllerUtils.computedSpeed(delta, this.speed, this.speedDelta);
 
 		else if(up && !down && !left && right){
-			this.character.X += this.computedSpeed(delta, this.computed.diagonalSpeed);
-			this.character.Z += this.computedSpeed(delta, this.computed.diagonalSpeed);
+			this.character.X += controllerUtils.computedSpeed(delta, this.computed.diagonalSpeed, this.speedDelta);
+			this.character.Z += controllerUtils.computedSpeed(delta, this.computed.diagonalSpeed, this.speedDelta);
 		}
 		else if(up && !down && left && !right){
-			this.character.X += this.computedSpeed(delta, this.computed.diagonalSpeed);
-			this.character.Z -= this.computedSpeed(delta, this.computed.diagonalSpeed);
+			this.character.X += controllerUtils.computedSpeed(delta, this.computed.diagonalSpeed, this.speedDelta);
+			this.character.Z -= controllerUtils.computedSpeed(delta, this.computed.diagonalSpeed, this.speedDelta);
 		}
 
 		else if(!up && down && !left && right){
-			this.character.X -= this.computedSpeed(delta, this.computed.diagonalSpeed);
-			this.character.Z += this.computedSpeed(delta, this.computed.diagonalSpeed);
+			this.character.X -= controllerUtils.computedSpeed(delta, this.computed.diagonalSpeed, this.speedDelta);
+			this.character.Z += controllerUtils.computedSpeed(delta, this.computed.diagonalSpeed, this.speedDelta);
 		}
 		else if(!up && down && left && !right){
-			this.character.X -= this.computedSpeed(delta, this.computed.diagonalSpeed);
-			this.character.Z -= this.computedSpeed(delta, this.computed.diagonalSpeed);
+			this.character.X -= controllerUtils.computedSpeed(delta, this.computed.diagonalSpeed, this.speedDelta);
+			this.character.Z -= controllerUtils.computedSpeed(delta, this.computed.diagonalSpeed, this.speedDelta);
 		}
 
 		this.myThree.setCameraPosition(this.character.X, this.character.Z);
@@ -145,7 +170,7 @@ export class Controller{
 			if(dif % Math.PI < dif) coef *= -1;
 			else if(dif < 0 && dif % Math.PI > dif) coef *= -1;
 
-			const speed = this.computedSpeed(delta, 0.05) * coef;
+			const speed = controllerUtils.computedSpeed(delta, this.speedRotate, this.speedDelta) * coef;
 
 			if(Math.abs(this.rotateTo - this.character.ROTATE) < speed) this.character.ROTATE = this.rotateTo;
 			else {
@@ -154,10 +179,6 @@ export class Controller{
 				this.character.ROTATE = add % this.computed.oneRad;
 			}
 		}
-	}
-
-	private computedSpeed(delta: number, speed: number){
-		return delta * speed / this.speedDelta;
 	}
 }
 
@@ -181,5 +202,12 @@ export const controllerUtils = {
 			pressedActions.right === false &&
 			pressedActions.left === false
 		); 
-	}
+	},
+	computedSpeed: (delta: number, speed: number, deltaRef: number) => delta * speed / deltaRef,
+	hasContradictoryActions: (pressedActions: Controller["pressedActions"]) => {
+		const {up, down, left, right} = pressedActions;
+		if(up && down) return true;
+		else if(left && right) return true;
+		else return false;
+	},
 };
