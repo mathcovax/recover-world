@@ -17,7 +17,14 @@
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+	"baseUrl": "./",
+    "paths": {
+      "@P/*": ["./src/pages/*"],
+      "@C/*": ["./src/components/*"],
+      "@S/*": ["./src/scripts/*"],
+    },
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
   "references": [{ "path": "./tsconfig.node.json" }]
