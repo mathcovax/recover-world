@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import {FBXLoader} from "three/examples/jsm/Addons.js";
-import {Model} from "./Model";
 import {Hook} from "../Hook";
+import {Character} from "./Character";
 
 export class MyThree{
 	constructor(query: string){
@@ -21,8 +21,7 @@ export class MyThree{
 			this.fov,
 			this.aspect,
 		);
-		this.camera.position.set(-50, 100, -50);
-		this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+		this.setCameraPosition(0, 0);
 		
 		this.ambientLight = new THREE.AmbientLight(0xcccccc, 0.2); 
 		this.directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
@@ -31,6 +30,8 @@ export class MyThree{
 		this.scene.add(this.ambientLight);
 		this.scene.add(this.directionalLight);
 		this.scene.add(this.camera);
+
+		this.renderHook.addSubscriber(this.characterMotion.bind(this));
 	}
 
 	private canvas: HTMLCanvasElement;
@@ -41,36 +42,80 @@ export class MyThree{
 
 	private renderer: THREE.WebGLRenderer;
 	private scene: THREE.Scene;
-	camera: THREE.PerspectiveCamera;
+	private camera: THREE.PerspectiveCamera;
+	private gapCamera = {
+		x: -50,
+		y: 100,
+		z: 0,
+	};
 
 	private ambientLight: THREE.AmbientLight;
 	private directionalLight: THREE.DirectionalLight;
 
 	renderHook = new Hook(0);
+	private currentFrameId = 0;
 	private started = false;
+	private characters: Character[] = [];
 
-	addModel(model: Model){
-		this.scene.add(model.getModel());
+	addModel(model: THREE.Group<THREE.Object3DEventMap>){
+		this.scene.add(model);
 	}
 
-	removeModel(model: Model){
-		this.scene.remove(model.getModel());
+	removeModel(model: THREE.Group<THREE.Object3DEventMap>){
+		this.scene.remove(model);
 	}
 
-	initRender(){
+	startRender(){
 		if(this.started) throw new Error();
 		this.started = true;
 		const buildedHook = this.renderHook.build();
 		const render = () => {
-			requestAnimationFrame(render);
+			this.currentFrameId = requestAnimationFrame(render);
 			buildedHook();
 			this.renderer.render(this.scene, this.camera);
 		};
 		render();
 	}
 
+	stopRender(){
+		cancelAnimationFrame(this.currentFrameId);
+		this.started = false;
+	}
+
+	restartRender(){
+		this.stopRender();
+		this.startRender();
+	}
+
 	isStarted(){
 		return this.started;
+	}
+
+	setCameraPosition(x: number, z: number){
+		this.camera.position.set(
+			x + this.gapCamera.x, 
+			this.gapCamera.y, 
+			z + this.gapCamera.z,
+		);
+		this.camera.lookAt(new THREE.Vector3(x, 0, z));
+	}
+
+	addCharacter(character: Character){
+		this.characters.push(character);
+		this.addModel(character.getModel());
+	}
+
+	removeCharacter(character: Character){
+		const index = this.characters.findIndex(char => char === character);
+		if(index !== -1) this.characters.slice(index, 1);
+		this.removeModel(character.getModel());
+	}
+
+	private characterMotion(){
+		this.characters.forEach(char => {
+			const dt = char.clock.getDelta();
+			char.getMixer().update(dt);
+		});
 	}
 
 	private static loaderFBX = new FBXLoader();
