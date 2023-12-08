@@ -15,7 +15,7 @@ const motions = await FBXLoader({
 const myThree = new MyThree("#scene");
 
 const character = new Character(models["y_bot"], motions);
-character.launchMotion("standing");
+character.hooks.onAdd.addSubscriber(() => character.launchMotion("standing"));
 myThree.addCharacter(character);
 
 const controller = myThree.createController(character);

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import {Hook} from "../Hook";
 
 export class Character<
 	motionsObject extends Record<string, THREE.Group<THREE.Object3DEventMap>> = any
@@ -19,6 +20,11 @@ export class Character<
 
 	private currentMotionName?: keyof motionsObject;
 	private currentMotion?: THREE.AnimationAction;
+
+	hooks = {
+		onAdd: new Hook(0),
+		onRemove: new Hook(0),
+	};
 
 	getModel(){
 		return this.model;

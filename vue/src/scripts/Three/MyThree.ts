@@ -104,12 +104,14 @@ export class MyThree{
 	addCharacter(character: Character){
 		this.characters.push(character);
 		this.addModel(character.getModel());
+		character.hooks.onAdd.launchSubscriber();
 	}
 
 	removeCharacter(character: Character){
 		const index = this.characters.findIndex(char => char === character);
 		if(index !== -1) this.characters.slice(index, 1);
 		this.removeModel(character.getModel());
+		character.hooks.onRemove.launchSubscriber();
 	}
 
 	private characterMotion(){
