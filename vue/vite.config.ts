@@ -13,7 +13,6 @@ export default defineConfig({
 				"./src/router/**",
 				"./src/components/**",
 			],
-			include: [/taob\.ts$/],
 			imports: [
 				"vue",
 				"vue-router",

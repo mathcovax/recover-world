@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {taob} from "src/taob";
+import {taob} from "../plugins/taob";
 import {reactive, ref} from "vue";
 
 export interface DataUserStore{
