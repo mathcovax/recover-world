@@ -3,5 +3,7 @@
 </script>
 
 <template>
-	<div/>
+	<div>
+		main interface
+	</div>
 </template>

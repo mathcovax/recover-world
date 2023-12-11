@@ -3,5 +3,7 @@
 </script>
 
 <template>
-	<div/>
+	<div>
+		register
+	</div>
 </template>
