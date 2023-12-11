@@ -1,12 +1,7 @@
 import {defineStore} from "pinia";
-import {taob} from "../plugins/taob";
+import {dt} from "../plugins/duploTo";
 import {reactive, ref} from "vue";
-
-export interface DataUserStore{
-	isConnected: boolean,
-	email?: string,
-	pseudo?: string,
-}
+import {DataUserStore, UserInfoRequest} from "./types";
 
 export const userStore = defineStore(
 	"userStore",
@@ -15,7 +10,7 @@ export const userStore = defineStore(
 		const data = reactive<DataUserStore>({isConnected: true});
 
 		const getInfo = async() => {
-			const result = await taob.get("/user", {}, {})
+			await dt.get<UserInfoRequest>("/user")
 			.s(({email, pseudo}) => {
 				data.isConnected = true;
 				data.email = email;
@@ -23,7 +18,7 @@ export const userStore = defineStore(
 			})
 			.result;
 			
-			return !result.error;
+			return data.isConnected;
 		};
 
 		return {

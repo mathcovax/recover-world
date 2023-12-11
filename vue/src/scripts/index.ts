@@ -2,7 +2,7 @@ import * as THREE from "three";
 import {Character} from "./myThree/Character";
 import {models, motions} from "./load";
 import {myThree} from "./myThree";
-	
+
 const character = new Character(models["y_bot"], motions);
 character.hooks.onAdd.addSubscriber(() => character.launchMotion("standing"));
 myThree.addCharacter(character);
