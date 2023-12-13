@@ -11,8 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
-
 .env.local
+firebase.credential.json
 
 # Editor directories and files
 .idea

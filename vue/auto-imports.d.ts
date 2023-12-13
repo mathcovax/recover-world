@@ -6,12 +6,16 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue')['EffectScope']
+  const app: typeof import('./src/plugins/firebase')['app']
+  const auth: typeof import('./src/plugins/firebase')['auth']
   const computed: typeof import('vue')['computed']
   const createApp: typeof import('vue')['createApp']
   const customRef: typeof import('vue')['customRef']
   const defineAsyncComponent: typeof import('vue')['defineAsyncComponent']
   const defineComponent: typeof import('vue')['defineComponent']
+  const dt: typeof import('./src/plugins/duploTo')['dt']
   const effectScope: typeof import('vue')['effectScope']
+  const firebaseApp: typeof import('./src/plugins/firebase')['firebaseApp']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
   const h: typeof import('vue')['h']

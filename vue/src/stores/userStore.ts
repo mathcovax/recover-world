@@ -7,11 +7,16 @@ export const userStore = defineStore(
 	"userStore",
 	() => {
 		const token = ref(localStorage.getItem("access_token"));
-		const data = reactive<DataUserStore>({isConnected: true});
+		const getToken = () => token.value;
+		const setToken = (value: string) => {
+			token.value = value;
+			localStorage.setItem("access_token", value);
+		};
 
+		const data = reactive<DataUserStore>({isConnected: false});
 		const getInfo = async() => {
 			await dt.get<UserInfoRequest>("/user")
-			.s(({email, pseudo}) => {
+			.info("user.info", ({email, pseudo}) => {
 				data.isConnected = true;
 				data.email = email;
 				data.pseudo = pseudo;
@@ -25,6 +30,9 @@ export const userStore = defineStore(
 			token,
 			data, 
 			getInfo,
+			getToken,
+			setToken
 		};
 	}
 );
+

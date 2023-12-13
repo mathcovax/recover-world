@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "@duplojs/to": "^0.1.2",
+    "firebase": "^10.7.1",
     "pinia": "^2.1.7",
     "sass": "^1.69.5",
     "three": "^0.159.0",

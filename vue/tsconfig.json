@@ -24,6 +24,7 @@
       "@P/*": ["./src/pages/*"],
       "@C/*": ["./src/components/*"],
       "@S/*": ["./src/scripts/*"],
+      "@SRC/*": ["./src/*"],
     },
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],

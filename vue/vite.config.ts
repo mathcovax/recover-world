@@ -12,6 +12,7 @@ export default defineConfig({
 				"./src/stores/**",
 				"./src/router/**",
 				"./src/components/**",
+				"./src/plugins/**",
 			],
 			imports: [
 				"vue",
@@ -24,6 +25,7 @@ export default defineConfig({
 			"@P": resolve(__dirname, "src", "pages"),
 			"@C": resolve(__dirname, "src", "components"),
 			"@S": resolve(__dirname, "src", "scripts"),
+			"@SRC": resolve(__dirname, "src"),
 		}
 	},
 	build: {
