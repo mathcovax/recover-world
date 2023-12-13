@@ -12,19 +12,21 @@ export class Controller{
 			midWidth: this.myThree.width / 2,
 			midHeight: this.myThree.height / 2,
 			gapRotate: Math.PI / 2,
-			oneRad: Math.PI * 2,
-			diagonalSpeed: 0,
 		};
 
 		this.setSpeed(0.6);
 		this.speedClock = new THREE.Clock();
 
-		this.functionOnClick = this.onClick.bind(this);
+		this.functionOnMouseDown = this.onMouseDown.bind(this);
+		this.functionOnMouseUp = this.onMouseUp.bind(this);
+		this.functionOnMouseMove = this.onMouseMove.bind(this);
 		this.functionOnKeyDown = this.onKeyDown.bind(this);
 		this.functionOnKeyUp = this.onKeyUp.bind(this);
 		this.functionOnRenderFrame = this.onRenderFrame.bind(this);
 
-		window.addEventListener("click", this.functionOnClick);
+		window.addEventListener("mousedown", this.functionOnMouseDown);
+		window.addEventListener("mouseup", this.functionOnMouseUp);
+		window.addEventListener("mousemove", this.functionOnMouseMove);
 		window.addEventListener("keydown", this.functionOnKeyDown);
 		window.addEventListener("keyup", this.functionOnKeyUp);
 		this.myThree.renderHook.addSubscriber(this.functionOnRenderFrame);
@@ -34,7 +36,9 @@ export class Controller{
 
 	private myThree: MyThree;
 	private character: Character;
-	private functionOnClick: Controller["onClick"];
+	private functionOnMouseDown: Controller["onMouseDown"];
+	private functionOnMouseUp: Controller["onMouseUp"];
+	private functionOnMouseMove: Controller["onMouseMove"];
 	private functionOnKeyUp: Controller["onKeyUp"];
 	private functionOnKeyDown: Controller["onKeyDown"];
 	private functionOnRenderFrame: Controller["onRenderFrame"];
@@ -43,8 +47,6 @@ export class Controller{
 		midWidth: number,
 		midHeight: number,
 		gapRotate: number,
-		oneRad: number,
-		diagonalSpeed: number,
 	};
 	private keyToActions = {
 		z: "up",
@@ -58,12 +60,22 @@ export class Controller{
 		right: false,
 		left: false,
 	};
+	private pressedClick = {
+		right: false,
+		left: false,
+	};
+	private mousePosition = {
+		x: 0,
+		y: 0,
+	};
 
-	private rotateTo = 0;
 	private speed = 0;
 	private speedClock: THREE.Clock;
-	private speedDelta = 0.007;
-	private speedRotate = 0.08;
+	private speedDeltaRef = 0.007;
+	private raycaster = new THREE.Raycaster();
+	private raycasterVectorOrigin = new THREE.Vector3();
+	private raycasterVectorDirection = new THREE.Vector3(0, -1, 0);
+	private maxHeightDifference = 10;
 
 	hooks = {
 		onStartMove: new Hook(0),
@@ -72,7 +84,8 @@ export class Controller{
 	};
 
 	delete(){
-		window.removeEventListener("click", this.functionOnClick);
+		window.removeEventListener("mousedown", this.functionOnMouseDown);
+		window.removeEventListener("mouseup", this.functionOnMouseUp);
 		window.removeEventListener("keyup", this.functionOnKeyUp);
 		window.removeEventListener("keydown", this.functionOnKeyDown);
 		this.myThree.renderHook.removeSubscriber(this.functionOnRenderFrame);
@@ -80,22 +93,32 @@ export class Controller{
 	}
 
 	setSpeed(speed: number){
-		this.computed.diagonalSpeed = speed * speed / Math.sqrt(Math.pow(speed, 2) * 2);
 		this.speed = speed;
 	}
 
-	private onClick(event: MouseEvent){
-		if(!this.character) throw new Error();
-		const x = event.x - this.computed.midWidth;
-		const y = event.y - this.computed.midHeight;
+	private onMouseDown(event: MouseEvent){
+		if(event.button === 0){
+			this.pressedClick.left = true;
+			this.hooks.onStartMove.launchSubscriber();
+		}
+		else if(event.button === 2){
+			this.pressedClick.right = true;
+		}
+	}
 
-		let rotate = Math.atan(x / y);
-		if(y >= 0) rotate += Math.PI;
+	private onMouseUp(event: MouseEvent){
+		if(event.button === 0){
+			this.pressedClick.left = false;
+			this.hooks.onStopMove.launchSubscriber();
+		}
+		else if(event.button === 2){
+			this.pressedClick.right = false;
+		}
+	}
 
-		this.hooks.onClick.launchSubscriber(rotate, x, y);
-
-		if(controllerUtils.isInActions(this.pressedActions)) return;
-		this.rotateTo = rotate + this.computed.gapRotate;
+	private onMouseMove(event: MouseEvent){
+		this.mousePosition.x = event.x - this.computed.midWidth;
+		this.mousePosition.y = event.y - this.computed.midHeight;
 	}
 
 	private onKeyDown(event: KeyboardEvent){
@@ -103,14 +126,6 @@ export class Controller{
 		const action = this.keyToActions[key] as keyof typeof this.pressedActions | undefined;
 		if(action === undefined || this.pressedActions[action] === true) return;
 		this.pressedActions[action] = true;
-
-		if(controllerUtils.hasContradictoryActions(this.pressedActions)){
-			this.hooks.onStopMove.launchSubscriber();
-			return;
-		}
-
-		this.hooks.onStartMove.launchSubscriber();
-		this.rotateTo = controllerUtils.getRotateFromPressedActions(this.pressedActions) || this.rotateTo;
 	}
 
 	private onKeyUp(event: KeyboardEvent){
@@ -118,96 +133,30 @@ export class Controller{
 		const action = this.keyToActions[key] as keyof typeof this.pressedActions | undefined;
 		if(action === undefined) return;
 		this.pressedActions[action] = false;
-
-		if(!controllerUtils.isInActions(this.pressedActions)){
-			this.hooks.onStopMove.launchSubscriber();
-		}
-		else {
-
-			if(controllerUtils.hasContradictoryActions(this.pressedActions)){
-				this.hooks.onStopMove.launchSubscriber();
-				return;
-			}
-
-			this.hooks.onStartMove.launchSubscriber();
-			this.rotateTo = controllerUtils.getRotateFromPressedActions(this.pressedActions) || this.rotateTo;
-		}
 	}
 
 	private onRenderFrame(){
 		const delta = this.speedClock.getDelta();
-		const {up, down, left, right} = this.pressedActions;
+		const map = this.myThree.getMap();
+		if(map && this.pressedClick.left){
+			const {x: mouseX, y: mouseY} = this.mousePosition;
+			let rotate = Math.atan(mouseX / mouseY) + this.computed.gapRotate;
+			if(mouseY >= 0) rotate += Math.PI;
+			this.character.ROTATE = rotate;
 
-		if(up && !down && !left && !right) this.character.X += controllerUtils.computedSpeed(delta, this.speed, this.speedDelta);
-		else if(!up && down && !left && !right) this.character.X -= controllerUtils.computedSpeed(delta, this.speed, this.speedDelta);
-		else if(!up && !down && !left && right) this.character.Z += controllerUtils.computedSpeed(delta, this.speed, this.speedDelta);
-		else if(!up && !down && left && !right) this.character.Z -= controllerUtils.computedSpeed(delta, this.speed, this.speedDelta);
+			const currentSpeed = (delta * this.speed / this.speedDeltaRef);
+			const x = (Math.sin(rotate) * currentSpeed) + this.character.X;
+			const z = (Math.cos(rotate) * currentSpeed) + this.character.Z;
 
-		else if(up && !down && !left && right){
-			this.character.X += controllerUtils.computedSpeed(delta, this.computed.diagonalSpeed, this.speedDelta);
-			this.character.Z += controllerUtils.computedSpeed(delta, this.computed.diagonalSpeed, this.speedDelta);
-		}
-		else if(up && !down && left && !right){
-			this.character.X += controllerUtils.computedSpeed(delta, this.computed.diagonalSpeed, this.speedDelta);
-			this.character.Z -= controllerUtils.computedSpeed(delta, this.computed.diagonalSpeed, this.speedDelta);
-		}
-
-		else if(!up && down && !left && right){
-			this.character.X -= controllerUtils.computedSpeed(delta, this.computed.diagonalSpeed, this.speedDelta);
-			this.character.Z += controllerUtils.computedSpeed(delta, this.computed.diagonalSpeed, this.speedDelta);
-		}
-		else if(!up && down && left && !right){
-			this.character.X -= controllerUtils.computedSpeed(delta, this.computed.diagonalSpeed, this.speedDelta);
-			this.character.Z -= controllerUtils.computedSpeed(delta, this.computed.diagonalSpeed, this.speedDelta);
-		}
-
-		this.myThree.setCameraPosition(this.character.X, this.character.Z);
-
-		if(this.rotateTo !== this.character.ROTATE){
-			const dif = this.character.ROTATE - this.rotateTo;
-			let coef = 1;
-			if(dif > 0) coef = -1;
-			if(dif % Math.PI < dif) coef *= -1;
-			else if(dif < 0 && dif % Math.PI > dif) coef *= -1;
-
-			const speed = controllerUtils.computedSpeed(delta, this.speedRotate, this.speedDelta) * coef;
-
-			if(Math.abs(this.rotateTo - this.character.ROTATE) < speed) this.character.ROTATE = this.rotateTo;
-			else {
-				let add = this.character.ROTATE + speed;
-				if(add < 0) add += this.computed.oneRad;
-				this.character.ROTATE = add % this.computed.oneRad;
-			}
+			this.raycasterVectorOrigin.set(x, this.character.Y + this.maxHeightDifference, z);
+			this.raycaster.set(this.raycasterVectorOrigin, this.raycasterVectorDirection);
+			const intersects = this.raycaster.intersectObject(map.getFloor());
+			if(!intersects[0] || Math.abs(this.character.Y - intersects[0].point.y) > this.maxHeightDifference) return;
+			
+			this.character.X = x;
+			this.character.Z = z;
+			this.character.Y = intersects[0].point.y;
+			this.myThree.setCameraPosition(this.character.X, this.character.Y, this.character.Z);
 		}
 	}
 }
-
-
-export const controllerUtils = {
-	getRotateFromPressedActions: (pressedActions: Controller["pressedActions"]) => {
-		const {up, down, left, right} = pressedActions;
-		if(up && !down && !left && !right) return Math.PI / 2;
-		else if(!up && down && !left && !right) return 3 * Math.PI / 2;
-		else if(!up && !down && !left && right) return 2 * Math.PI;
-		else if(!up && !down && left && !right) return Math.PI;
-		else if(up && !down && !left && right) return Math.PI / 4;
-		else if(up && !down && left && !right) return 3 * Math.PI / 4;
-		else if(!up && down && !left && right) return 7 * Math.PI / 4;
-		else if(!up && down && left && !right) return 5 * Math.PI / 4;
-	},
-	isInActions: (pressedActions: Controller["pressedActions"]) => {
-		return !(
-			pressedActions.up === false &&
-			pressedActions.down === false &&
-			pressedActions.right === false &&
-			pressedActions.left === false
-		); 
-	},
-	computedSpeed: (delta: number, speed: number, deltaRef: number) => delta * speed / deltaRef,
-	hasContradictoryActions: (pressedActions: Controller["pressedActions"]) => {
-		const {up, down, left, right} = pressedActions;
-		if(up && down) return true;
-		else if(left && right) return true;
-		else return false;
-	},
-};

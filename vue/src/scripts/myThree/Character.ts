@@ -69,6 +69,14 @@ export class Character<
 		this.model.position.x = value;
 	}
 
+	get Y(){
+		return this.model.position.y;
+	}
+
+	set Y(value: number){
+		this.model.position.y = value;
+	}
+
 	get Z(){
 		return this.model.position.z;
 	}

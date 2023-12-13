@@ -1,8 +1,9 @@
 import * as THREE from "three";
-import {FBXLoader} from "three/examples/jsm/Addons.js";
+import {FBXLoader, GLTFLoader} from "three/examples/jsm/Addons.js";
 import {Hook} from "../Hook";
 import {Character} from "./Character";
 import {Controller} from "./Controller";
+import {Map} from "./Map";
 
 export class MyThree{
 	constructor(query: string){
@@ -22,7 +23,7 @@ export class MyThree{
 			this.fov,
 			this.aspect,
 		);
-		this.setCameraPosition(0, 0);
+		this.setCameraPosition(0, 0, 0);
 		
 		this.ambientLight = new THREE.AmbientLight(0xcccccc, 0.2); 
 		this.directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
@@ -45,8 +46,8 @@ export class MyThree{
 	private scene: THREE.Scene;
 	private camera: THREE.PerspectiveCamera;
 	private gapCamera = {
-		x: -50,
-		y: 100,
+		x: -80,
+		y: 200,
 		z: 0,
 	};
 
@@ -57,12 +58,13 @@ export class MyThree{
 	private currentFrameId = 0;
 	private started = false;
 	private characters: Character[] = [];
+	private map?: Map;
 
 	addModel(model: THREE.Object3D<THREE.Object3DEventMap>){
 		this.scene.add(model);
 	}
 
-	removeModel(model: THREE.Group<THREE.Object3DEventMap>){
+	removeModel(model: THREE.Object3D<THREE.Object3DEventMap>){
 		this.scene.remove(model);
 	}
 
@@ -92,13 +94,13 @@ export class MyThree{
 		return this.started;
 	}
 
-	setCameraPosition(x: number, z: number){
+	setCameraPosition(x: number, y: number, z: number){
 		this.camera.position.set(
 			x + this.gapCamera.x, 
-			this.gapCamera.y, 
+			y + this.gapCamera.y, 
 			z + this.gapCamera.z,
 		);
-		this.camera.lookAt(new THREE.Vector3(x, 0, z));
+		this.camera.lookAt(new THREE.Vector3(x, y, z));
 	}
 
 	addCharacter(character: Character){
@@ -126,10 +128,26 @@ export class MyThree{
 		return new Controller(this, character);
 	}
 
+	setMap(map: Map){
+		if(this.map){
+			this.removeModel(this.map.getFloor());
+		}
+		this.map = map;
+		this.addModel(this.map.getFloor());
+	}
+
+	getMap(){
+		return this.map;
+	}
+
 	private static loaderFBX = new FBXLoader();
+	private static loaderGLTF = new GLTFLoader();
 
 	static loadFBX(url: string){
 		return this.loaderFBX.loadAsync(url);
+	}
+	static loadGLTF(url: string){
+		return this.loaderGLTF.loadAsync(url);
 	}
 	
 }
