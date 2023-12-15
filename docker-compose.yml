@@ -9,6 +9,8 @@ services:
     working_dir: /home/node/recover-world
     user: 1000:1000
     command: npm i
+    depends_on:
+      - postgres
 
   duplojs:
     image: node:20.10.0-alpine
@@ -22,7 +24,6 @@ services:
     depends_on:
       installer:
         condition: service_completed_successfully
-      - postgres
     
   vue:
     image: node:20.10.0-alpine
@@ -59,4 +60,4 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
 volumes:
-  - postgres-data
+  postgres-data:
