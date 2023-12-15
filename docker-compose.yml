@@ -22,6 +22,7 @@ services:
     depends_on:
       installer:
         condition: service_completed_successfully
+      - postgres
     
   vue:
     image: node:20.10.0-alpine
@@ -50,3 +51,12 @@ services:
     depends_on:
       installer:
         condition: service_completed_successfully
+
+  postgres:
+    image: postgres:15.2
+    env_file: .env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  - postgres-data

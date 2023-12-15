@@ -12,7 +12,8 @@
 		"@duplojs/routes-directory": "0.2.2",
 		"@duplojs/type-input": "0.1.0",
 		"firebase-admin": "^12.0.0",
-		"jsonwebtoken": "^9.0.2"
+		"jsonwebtoken": "^9.0.2",
+		"prisma": "^5.7.0"
 	},
 	"nodemonConfig": {
 		"ext": ".ts"

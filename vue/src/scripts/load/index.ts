@@ -2,8 +2,7 @@ import {FBXLoader} from "@S/myThree/3DLoader";
 import {MyThree} from "@S/myThree/MyThree";
 
 export const models = await FBXLoader({
-	y_bot: "/models/Y_Bot.fbx",
-	bot_y: "/models/bot_y.fbx",
+	y_bot: "/models/y_bot.fbx",
 });
 	
 export const motions = await FBXLoader({

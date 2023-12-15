@@ -3,10 +3,6 @@ import {models, motions, map} from "./load";
 import {myThree} from "./myThree";
 import {Map} from "./myThree/Map";
 
-console.log(models["y_bot"]);
-// models["y_bot"].children[1].visible = false;
-
-
 const character = new Character(models["y_bot"], motions);
 character.hooks.onAdd.addSubscriber(() => character.launchMotion("standing"));
 myThree.addCharacter(character);

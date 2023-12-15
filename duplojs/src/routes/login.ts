@@ -1,7 +1,9 @@
-import {OkHttpException, UnauthorizedHttpException} from "@duplojs/http-exception";
+import {OkHttpException, TemporaryRedirectHttpException, UnauthorizedHttpException} from "@duplojs/http-exception";
 import {duplo} from "../../main";
 import {zod} from "@duplojs/duplojs";
 import {checkGoogleIdToken} from "../checkers/token";
+import {checkUserExist, userInput} from "../checkers/user";
+import jwt from "jsonwebtoken";
 
 export default (path: string) => 
 	duplo
@@ -20,6 +22,19 @@ export default (path: string) =>
 			indexing: "userEmail"
 		}
 	)
-	.handler(({d: {userEmail}}) => {
-		throw new OkHttpException("user.info", userEmail);
+	.check(
+		checkUserExist,
+		{
+			input: p => userInput.email(p("userEmail")),
+			result: "user.exist",
+			catch: (res, info) => {
+				throw new TemporaryRedirectHttpException("/register", info);
+			},
+			indexing: "user",
+		}
+	)
+	.handler(({d: {user}}) => {
+		const access_token = jwt.sign(user.id, process.env.TOKEN_KEY as string);
+
+		throw new OkHttpException("user.login", access_token);
 	});

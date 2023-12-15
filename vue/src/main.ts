@@ -29,6 +29,10 @@ getInfo().then(connected => {
 		//redirect to login page
 		router.push("/login");
 	}
+	else {
+		//redirect to main page
+		router.push("/");
+	}
 });
 
 
