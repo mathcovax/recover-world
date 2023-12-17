@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {router} from "@SRC/router";
-import {reactive} from "vue";
-import {toFormRules} from "@SRC/plugins/toFormRules";
 import * as zod from "zod";
-import {dt} from "@SRC/plugins/duploTo";
-import {userStore} from "@SRC/stores/userStore";
 
 const googleIdToken = router.currentRoute.value.query.googleIdToken as string | undefined;
 if(!googleIdToken) router.push("/login");
@@ -27,6 +22,7 @@ async function submited(){
 	.result;
 }
 
+const pseudoRule = toFormRules(zod.string().min(3, "minimume 3 char").max(30, "maximume 30 char"));
 </script>
 
 <template>
@@ -35,7 +31,7 @@ async function submited(){
 			<VTextField
 			label="Pseudo"
 			v-model="formData.pseudo"
-			:rules="toFormRules(zod.string().min(3, 'minimume 3 char').max(30, 'maximume 30 char'))"
+			:rules="pseudoRule"
 			/>
 
 			<VBtn type="submite">

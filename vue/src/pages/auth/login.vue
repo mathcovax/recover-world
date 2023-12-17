@@ -1,9 +1,5 @@
 <script setup lang="ts">
 import {GoogleAuthProvider, getAuth, signInWithPopup} from "firebase/auth";
-import {firebaseApp} from "@SRC/plugins/firebase";
-import {dt} from "@SRC/plugins/duploTo";
-import {userStore} from "@SRC/stores/userStore";
-import {router} from "@SRC/router";
 
 const provider = new GoogleAuthProvider();
 const auth = getAuth(firebaseApp);

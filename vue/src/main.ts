@@ -37,7 +37,7 @@ dt.setDefaultHeaders({
 });
 
 //wait initialize router else router.currentRoute.value.path is allways "/"
-await new Promise(resolve => setTimeout(resolve, 100));
+await new Promise(resolve => setTimeout(resolve, 200));
 
 //try to get user infos
 getInfo().then(connected => {
