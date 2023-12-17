@@ -7,7 +7,7 @@ export const checkAccessToken = duplo.createChecker(
 	{
 		handler(value: string, output, options){
 			try {
-				const content = jwt.verify(value, process.env.TOKEN_KEY as string);
+				const content = jwt.verify(value, process.env.TOKEN_KEY as string) as string;
 				return output("token.valid", content);
 			}
 			catch {

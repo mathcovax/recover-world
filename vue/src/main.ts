@@ -6,15 +6,27 @@ import {store} from "./stores";
 import {dt} from "./plugins/duploTo";
 import {userStore} from "./stores/userStore";
 import "./plugins/firebase";
+import "vuetify/styles";
+import {createVuetify} from "vuetify";
+import * as components from "vuetify/components";
+import * as directives from "vuetify/directives";
 
 //create vue app
 createApp(App)
 .use(router)
 .use(store)
+.use(createVuetify({
+	components,
+	directives
+}))
 .mount("#app");
 
+
 // callback when user infos is fetched
-dt.addHookInfo("user.info", () => import("@S/index"));
+dt.addHookInfo("user.info", () => {
+	import("@S/index");
+	router.push("/");
+});
 
 const {getInfo, getToken} = userStore();
 //add access_token header for all request
@@ -23,11 +35,15 @@ dt.setDefaultHeaders({
 		return getToken() ?? undefined;
 	}
 });
+
+//wait initialize router else router.currentRoute.value.path is allways "/"
+await new Promise(resolve => setTimeout(resolve, 100));
+
 //try to get user infos
 getInfo().then(connected => {
 	if(!connected){
-		//redirect to login page
-		router.push("/login");
+		//registration page can handle the redirection alone
+		if(router.currentRoute.value.path !== "/register")router.push("/login");
 	}
 	else {
 		//redirect to main page
