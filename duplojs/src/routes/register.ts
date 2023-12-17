@@ -6,6 +6,7 @@ import {checkUserExist, userInput} from "../checkers/user";
 import {prisma} from "../plugins/prisma";
 import jwt from "jsonwebtoken";
 
+/* PATH : /register */
 export default (path: string) => 
 	duplo
 	.declareRoute("POST", path)
@@ -34,14 +35,15 @@ export default (path: string) =>
 				pseudo: p("pseudo"),
 			}),
 			result: "user.notfound",
-			catch: (res, info, data) => {
-				// wait duplo update to use floor here 
-				// i want check if email match or pseudo match
-				throw new ConflictHttpException("user.alreadyExist");
+			catch: (res, info, data, p) => {
+				throw new ConflictHttpException(
+					data.email === p("userEmail") ?
+						"user.alreadyExist" :
+						"user.pseudo.alreadyUse"
+				);
 			},
 			options: {
 				email: true,
-				pseudo: true,
 				id: false,
 			}
 		}

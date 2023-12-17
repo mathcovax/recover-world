@@ -2,6 +2,7 @@ import {NotFoundHttpException, OkHttpException} from "@duplojs/http-exception";
 import {mustBeConnected} from "../security/connected";
 import {checkUserExist, userInput} from "../checkers/user";
 
+/* PATH : /user */
 export default (path: string) => 
 	mustBeConnected({pickup: ["userId"]})
 	.declareRoute("GET", path)

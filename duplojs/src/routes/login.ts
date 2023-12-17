@@ -5,6 +5,7 @@ import {checkGoogleIdToken} from "../checkers/token";
 import {checkUserExist, userInput} from "../checkers/user";
 import jwt from "jsonwebtoken";
 
+/* PATH : /login */
 export default (path: string) => 
 	duplo
 	.declareRoute("POST", path)
