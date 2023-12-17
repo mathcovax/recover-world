@@ -1,6 +1,6 @@
+import {firebaseAuth} from "@plugins/firebase";
 import {duplo} from "../../main";
 import jwt from "jsonwebtoken";
-import {firebaseAuth} from "../plugins/firebase";
 
 export const checkAccessToken = duplo.createChecker(
 	"CheckAccessToken",

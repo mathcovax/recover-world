@@ -1,9 +1,9 @@
 import {NotFoundHttpException, OkHttpException, UnauthorizedHttpException} from "@duplojs/http-exception";
 import {duplo} from "../../main";
 import {zod} from "@duplojs/duplojs";
-import {checkGoogleIdToken} from "../checkers/token";
-import {checkUserExist, userInput} from "../checkers/user";
 import jwt from "jsonwebtoken";
+import {checkGoogleIdToken} from "@checkers/token";
+import {checkUserExist, userInput} from "@checkers/user";
 
 /* PATH : /login */
 export default (path: string) => 

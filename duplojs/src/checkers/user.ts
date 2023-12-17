@@ -1,6 +1,6 @@
 import {createTypeInput, GetTypeInput} from "@duplojs/type-input";
 import {duplo} from "../../main";
-import {prisma, Prisma} from "../plugins/prisma";
+import {prisma, Prisma} from "@plugins/prisma";
 
 export const userInput = createTypeInput()
 .add<"id", string>()

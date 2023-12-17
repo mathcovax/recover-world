@@ -1,10 +1,10 @@
 import {zod} from "@duplojs/duplojs";
 import {duplo} from "../../main";
-import {checkGoogleIdToken} from "../checkers/token";
 import {ConflictHttpException, OkHttpException, UnauthorizedHttpException} from "@duplojs/http-exception";
-import {checkUserExist, userInput} from "../checkers/user";
-import {prisma} from "../plugins/prisma";
 import jwt from "jsonwebtoken";
+import {checkGoogleIdToken} from "@checkers/token";
+import {checkUserExist, userInput} from "@checkers/user";
+import {prisma} from "@plugins/prisma";
 
 /* PATH : /register */
 export default (path: string) => 

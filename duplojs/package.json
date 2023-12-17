@@ -1,7 +1,7 @@
 {
 	"scripts": {
-		"dev": "nodemon --exec 'node --require sucrase/register main.ts'",
-		"dev-debug": "nodemon --exec 'ts-node main.ts'",
+		"dev": "nodemon --exec 'ts-node --require tsconfig-paths/register --transpiler sucrase/ts-node-plugin main.ts'",
+		"dev-debug": "nodemon --exec 'ts-node --require tsconfig-paths/register main.ts'",
 		"start": "node --require sucrase/register main.ts",
 		"lint": "eslint --fix **/**.ts"
 	},
@@ -20,6 +20,7 @@
 		"delay": 300
 	},
 	"devDependencies": {
-		"@types/jsonwebtoken": "^9.0.5"
+		"@types/jsonwebtoken": "^9.0.5",
+		"tsconfig-paths": "^4.2.0"
 	}
 }

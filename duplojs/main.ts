@@ -7,7 +7,11 @@ import dotenv from "dotenv";
 dotenv.config({path: "../.env.local"});
 dotenv.config({path: "../.env"});
 
-export const duplo = Duplo({port: 80, host: "0.0.0.0", environment: process.env.ENVIRONMENT});
+export const duplo = Duplo({
+	port: 80, 
+	host: "0.0.0.0", 
+	environment: process.env.ENVIRONMENT as "DEV" | "PROD",
+});
 
 duplo.use(duploDestructFloor);
 duplo.use(duploHttpException);
