@@ -1,5 +1,4 @@
 import {firebaseAuth} from "@plugins/firebase";
-import {duplo} from "../../main";
 import jwt from "jsonwebtoken";
 
 export const checkAccessToken = duplo.createChecker(
@@ -29,7 +28,6 @@ export const checkGoogleIdToken = duplo.createChecker(
 				}
 				return output("token.google.valid", email);
 			  } catch (e){
-				console.log(e);
 				return output("token.google.invalid", null);
 			  }
 		},

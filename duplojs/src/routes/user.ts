@@ -1,5 +1,4 @@
 import {checkUserExist, userInput} from "@checkers/user";
-import {NotFoundHttpException, OkHttpException} from "@duplojs/http-exception";
 import {mustBeConnected} from "@security/connected";
 
 /* PATH : /user */

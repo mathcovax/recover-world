@@ -15,10 +15,15 @@ export const duplo = Duplo({
 
 duplo.use(duploDestructFloor);
 duplo.use(duploHttpException);
-duplo.use(
-	duploRoutesDirectory, 
-	{
-		path: "./src/routes",
-		matchs: [matchScriptFile(p => import(p))]
-	}
-).then(() => duplo.launch());
+
+import("./global").then(async() => {
+	await duplo.use(
+		duploRoutesDirectory, 
+		{
+			path: "./src/routes",
+			matchs: [matchScriptFile(p => import(p))]
+		}
+	);
+	
+	duplo.launch();
+});
