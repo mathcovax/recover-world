@@ -56,5 +56,6 @@ declare global {
 		NotExtendedHttpException,
 		NetworkAuthenticationRequiredHttpException
 	} from "@duplojs/http-exception";
+	// @ts-ignore
 	import("@duplojs/http-exception");
 }

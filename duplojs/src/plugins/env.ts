@@ -1,4 +1,10 @@
-export const env = zod.object({
+import {zod} from "@duplojs/duplojs";
+import dotenv from "dotenv";
+
+dotenv.config({path: "../.env.local"});
+dotenv.config({path: "../.env"});
+
+const env = zod.object({
 	ENVIRONMENT: zod.enum(["DEV", "PROD"]),
 
 	ACCESS_TOKEN_KEY: zod.string(),
@@ -10,12 +16,6 @@ export const env = zod.object({
 	POSTGRES_USER: zod.string(), 
 	POSTGRES_PASSWORD: zod.string(),
 	DATABASE_URL: zod.string(),
-
-	MONGO_INITDB_ROOT_USERNAME: zod.string(),
-	MONGO_INITDB_ROOT_PASSWORD: zod.string(), 
-	MONGO_HOST: zod.string(),
-	MONGO_PORT: zod.coerce.number(),
-	MONGO_DB: zod.string(),
 })
 .parse({
 	ENVIRONMENT: process.env.ENVIRONMENT,
@@ -29,10 +29,15 @@ export const env = zod.object({
 	POSTGRES_USER: process.env.POSTGRES_USER, 
 	POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD,
 	DATABASE_URL: process.env.DATABASE_URL,
-
-	MONGO_INITDB_ROOT_USERNAME: process.env.MONGO_INITDB_ROOT_USERNAME,
-	MONGO_INITDB_ROOT_PASSWORD: process.env.MONGO_INITDB_ROOT_PASSWORD,
-	MONGO_HOST: process.env.MONGO_HOST,
-	MONGO_PORT: process.env.MONGO_PORT,
-	MONGO_DB: process.env.MONGO_DB,
 });
+
+Object.entries(env).forEach(([key, value]) => {
+	if(typeof env[key as keyof typeof env] === "string"){
+		(env[key as keyof typeof env] as any) = (env[key as keyof typeof env] as string).replace(
+			/\$\{([a-zA-Z0-9_]+)\}/g, 
+			(match, g1) => `${env[g1 as keyof typeof env]}`
+		) as string;
+	}
+});
+
+export {env};

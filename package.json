@@ -30,6 +30,6 @@
     "typescript": "^5.0.2"
   },
   "prisma": {
-    "schema": "duplojs/prisma/schema.prisma"
+    "schema": "duplojs/src/prisma/schema.prisma"
   }
 }
