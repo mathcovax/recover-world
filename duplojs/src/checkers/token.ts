@@ -1,13 +1,13 @@
 import {firebaseAuth} from "@plugins/firebase";
-import jwt from "jsonwebtoken";
+import {verifAccessToken} from "@plugins/token";
 
 export const checkAccessToken = duplo.createChecker(
 	"CheckAccessToken",
 	{
-		handler(value: string, output, options){
+		handler(token: string, output, options){
 			try {
-				const content = jwt.verify(value, process.env.TOKEN_KEY as string) as string;
-				return output("token.valid", content);
+				const userId = verifAccessToken(token);
+				return output("token.valid", userId);
 			}
 			catch {
 				return output("token.invalid", null);
@@ -20,9 +20,9 @@ export const checkAccessToken = duplo.createChecker(
 export const checkGoogleIdToken = duplo.createChecker(
 	"CheckGoogleIdToken",
 	{
-		async handler(value: string, output, options){
+		async handler(token: string, output, options){
 			try {
-				const {email} = await firebaseAuth.verifyIdToken(value);
+				const {email} = await firebaseAuth.verifyIdToken(token);
 				if(!email){
 					throw new Error("Missing email.");
 				}

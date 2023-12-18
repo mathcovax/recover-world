@@ -1,6 +1,6 @@
-import jwt from "jsonwebtoken";
 import {checkGoogleIdToken} from "@checkers/token";
 import {checkUserExist, userInput} from "@checkers/user";
+import {generateAccessToken} from "@plugins/token";
 
 /* PATH : /login */
 export default (path: string) => 
@@ -32,7 +32,7 @@ export default (path: string) =>
 		}
 	)
 	.handler(({d: {user}}) => {
-		const accessToken = jwt.sign(user.id, process.env.TOKEN_KEY as string);
+		const accessToken = generateAccessToken(user.id);
 
 		throw new OkHttpException("user.login", accessToken);
 	});

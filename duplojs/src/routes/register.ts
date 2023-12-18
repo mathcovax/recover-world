@@ -1,7 +1,7 @@
-import jwt from "jsonwebtoken";
 import {checkGoogleIdToken} from "@checkers/token";
 import {checkUserExist, userInput} from "@checkers/user";
 import {prisma} from "@plugins/prisma";
+import {generateAccessToken} from "@plugins/token";
 
 /* PATH : /register */
 export default (path: string) => 
@@ -56,7 +56,7 @@ export default (path: string) =>
 			}
 		});
 
-		const accessToken = jwt.sign(userId, process.env.TOKEN_KEY as string);
+		const accessToken = generateAccessToken(userId);
 
 		throw new OkHttpException("user.create", accessToken);
 	});
