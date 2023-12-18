@@ -2,6 +2,7 @@ export {};
 declare global {
 	const duplo: typeof import("../main")["duplo"];
 	const zod: typeof import("@duplojs/duplojs")["zod"];
+	const env: typeof import("../src/plugins/env")["env"];
 }
 
 declare global {
