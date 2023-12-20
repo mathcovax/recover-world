@@ -58,5 +58,5 @@ export default (path: string) =>
 
 		const accessToken = generateAccessToken(userId);
 
-		throw new OkHttpException("user.create", accessToken);
+		throw new OkHttpException("user.register", accessToken);
 	});

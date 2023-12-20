@@ -15,7 +15,7 @@ async function sign(){
 		await dt.post<string>("/login", googleIdToken)
 		.info<undefined>("user.notfound", () => {
 			router.push({
-				path: "/register",
+				name: "register",
 				query: {googleIdToken}
 			});
 		})
@@ -35,7 +35,7 @@ async function sign(){
 <template>
 	<div>
 		<button @click="sign">
-			Se connecter/S'inscrire avec Google
+			{{ $t("login.btn.connect") }}
 		</button>
 	</div>
 </template>

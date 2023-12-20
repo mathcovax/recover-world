@@ -13,7 +13,7 @@ export const userStore = defineStore(
 
 		const data = reactive<DataUserStore>({isConnected: false});
 		const getInfo = async() => {
-			await dt.get<UserInfoRequest>("/user")
+			await dt.get<UserInfoRequest>("/user", undefined, {disabledToast: true})
 			.info("user.info", ({email, pseudo}) => {
 				data.isConnected = true;
 				data.email = email;

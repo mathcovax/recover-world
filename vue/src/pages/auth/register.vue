@@ -2,7 +2,7 @@
 import * as zod from "zod";
 
 const googleIdToken = router.currentRoute.value.query.googleIdToken as string | undefined;
-if(!googleIdToken) router.push("/login");
+if(!googleIdToken) router.push({name: "login"});
 
 const {setToken, getInfo} = userStore();
 const formData = reactive<{pseudo: string}>({pseudo: ""});
@@ -35,7 +35,7 @@ const pseudoRule = toFormRules(zod.string().min(3, "minimume 3 char").max(30, "m
 			/>
 
 			<VBtn type="submite">
-				S'inscrire
+				{{ $t("register.btn.register") }}
 			</VBtn>
 		</VForm>
 	</div>
