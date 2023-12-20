@@ -15,6 +15,11 @@ fastify.register(fastifyProxy, {
 	prefix: "/duplojs",
 });
 
+fastify.register(fastifyStatic, {
+	root: resolve(__dirname, "..", "models"),
+	prefix: "/models",
+});
+
 if(process.env.ENVIRONMENT === "DEV"){
 	fastify.register(fastifyProxy, {
 		upstream: "http://vue:80",
@@ -25,11 +30,13 @@ else if(process.env.ENVIRONMENT === "PROD"){
 	const distDir = resolve(__dirname, "..", "dist");
 	const indexDistDir = resolve(distDir, "index.html");
 
+	// get index.html at /
 	fastify.get("/", (req, res) => {
 		res.header("content-type", "text/html; charset=utf-8");
 		createReadStream(indexDistDir).pipe(res.raw);
 	});
 
+	// get other file
 	fastify.register(fastifyStatic, {
 		root: distDir,
 	});
