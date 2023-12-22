@@ -3,59 +3,52 @@ declare global {
 	const duplo: typeof import("../main")["duplo"];
 	const zod: typeof import("@duplojs/duplojs")["zod"];
 	const env: typeof import("../src/plugins/env")["env"];
-}
 
-declare global {
-	// @ts-ignore
-	export {
-		HttpException,
-		CustomHttpException,
-		OkHttpException,
-		CreatedHttpException,
-		AcceptedHttpException,
-		NoContentHttpException,
-		ResetContentHttpException,
-		PartialContentHttpException,
-		MultipleChoicesHttpException,
-		MovedPermanentlyHttpException,
-		FoundHttpException,
-		SeeOtherHttpException,
-		NotModifiedHttpException,
-		TemporaryRedirectHttpException,
-		PermanentRedirectHttpException,
-		BadRequestHttpException,
-		UnauthorizedHttpException,
-		ForbiddenHttpException,
-		NotFoundHttpException,
-		MethodNotAllowedHttpException,
-		NotAcceptableHttpException,
-		ProxyAuthenticationRequiredHttpException,
-		RequestTimeoutHttpException,
-		ConflictHttpException,
-		GoneHttpException,
-		LengthRequiredHttpException,
-		PreconditionFailedHttpException,
-		PayloadTooLargeHttpException,
-		UriTooLongHttpException,
-		UnsupportedMediaTypeHttpException,
-		RangeNotSatisfiableHttpException,
-		ExpectationFailedHttpException,
-		ImATeapotHttpException,
-		UpgradeRequiredHttpException,
-		PreconditionRequiredHttpException,
-		TooManyRequestsHttpException,
-		RequestHeaderFieldsTooLargeHttpException,
-		UnavailableForLegalReasonsHttpException,
-		InternalServerErrorHttpException,
-		NotImplementedHttpException,
-		BadGatewayHttpException,
-		ServiceUnavailableHttpException,
-		GatewayTimeoutHttpException,
-		HttpVersionNotSupportedHttpException,
-		VariantAlsoNegotiatesHttpException,
-		NotExtendedHttpException,
-		NetworkAuthenticationRequiredHttpException
-	} from "@duplojs/http-exception";
-	// @ts-ignore
-	import("@duplojs/http-exception");
+	const HttpException: typeof import("@duplojs/http-exception")["HttpException"];
+	const CustomHttpException: typeof import("@duplojs/http-exception")["CustomHttpException"];
+	const OkHttpException: typeof import("@duplojs/http-exception")["OkHttpException"];
+	const CreatedHttpException: typeof import("@duplojs/http-exception")["CreatedHttpException"];
+	const AcceptedHttpException: typeof import("@duplojs/http-exception")["AcceptedHttpException"];
+	const NoContentHttpException: typeof import("@duplojs/http-exception")["NoContentHttpException"];
+	const ResetContentHttpException: typeof import("@duplojs/http-exception")["ResetContentHttpException"];
+	const PartialContentHttpException: typeof import("@duplojs/http-exception")["PartialContentHttpException"];
+	const MultipleChoicesHttpException: typeof import("@duplojs/http-exception")["MultipleChoicesHttpException"];
+	const MovedPermanentlyHttpException: typeof import("@duplojs/http-exception")["MovedPermanentlyHttpException"];
+	const FoundHttpException: typeof import("@duplojs/http-exception")["FoundHttpException"];
+	const SeeOtherHttpException: typeof import("@duplojs/http-exception")["SeeOtherHttpException"];
+	const NotModifiedHttpException: typeof import("@duplojs/http-exception")["NotModifiedHttpException"];
+	const TemporaryRedirectHttpException: typeof import("@duplojs/http-exception")["TemporaryRedirectHttpException"];
+	const PermanentRedirectHttpException: typeof import("@duplojs/http-exception")["PermanentRedirectHttpException"];
+	const BadRequestHttpException: typeof import("@duplojs/http-exception")["BadRequestHttpException"];
+	const UnauthorizedHttpException: typeof import("@duplojs/http-exception")["UnauthorizedHttpException"];
+	const ForbiddenHttpException: typeof import("@duplojs/http-exception")["ForbiddenHttpException"];
+	const NotFoundHttpException: typeof import("@duplojs/http-exception")["NotFoundHttpException"];
+	const MethodNotAllowedHttpException: typeof import("@duplojs/http-exception")["MethodNotAllowedHttpException"];
+	const NotAcceptableHttpException: typeof import("@duplojs/http-exception")["NotAcceptableHttpException"];
+	const ProxyAuthenticationRequiredHttpException: typeof import("@duplojs/http-exception")["ProxyAuthenticationRequiredHttpException"];
+	const RequestTimeoutHttpException: typeof import("@duplojs/http-exception")["RequestTimeoutHttpException"];
+	const ConflictHttpException: typeof import("@duplojs/http-exception")["ConflictHttpException"];
+	const GoneHttpException: typeof import("@duplojs/http-exception")["GoneHttpException"];
+	const LengthRequiredHttpException: typeof import("@duplojs/http-exception")["LengthRequiredHttpException"];
+	const PreconditionFailedHttpException: typeof import("@duplojs/http-exception")["PreconditionFailedHttpException"];
+	const PayloadTooLargeHttpException: typeof import("@duplojs/http-exception")["PayloadTooLargeHttpException"];
+	const UriTooLongHttpException: typeof import("@duplojs/http-exception")["UriTooLongHttpException"];
+	const UnsupportedMediaTypeHttpException: typeof import("@duplojs/http-exception")["UnsupportedMediaTypeHttpException"];
+	const RangeNotSatisfiableHttpException: typeof import("@duplojs/http-exception")["RangeNotSatisfiableHttpException"];
+	const ExpectationFailedHttpException: typeof import("@duplojs/http-exception")["ExpectationFailedHttpException"];
+	const ImATeapotHttpException: typeof import("@duplojs/http-exception")["ImATeapotHttpException"];
+	const UpgradeRequiredHttpException: typeof import("@duplojs/http-exception")["UpgradeRequiredHttpException"];
+	const PreconditionRequiredHttpException: typeof import("@duplojs/http-exception")["PreconditionRequiredHttpException"];
+	const TooManyRequestsHttpException: typeof import("@duplojs/http-exception")["TooManyRequestsHttpException"];
+	const RequestHeaderFieldsTooLargeHttpException: typeof import("@duplojs/http-exception")["RequestHeaderFieldsTooLargeHttpException"];
+	const UnavailableForLegalReasonsHttpException: typeof import("@duplojs/http-exception")["UnavailableForLegalReasonsHttpException"];
+	const InternalServerErrorHttpException: typeof import("@duplojs/http-exception")["InternalServerErrorHttpException"];
+	const NotImplementedHttpException: typeof import("@duplojs/http-exception")["NotImplementedHttpException"];
+	const BadGatewayHttpException: typeof import("@duplojs/http-exception")["BadGatewayHttpException"];
+	const ServiceUnavailableHttpException: typeof import("@duplojs/http-exception")["ServiceUnavailableHttpException"];
+	const GatewayTimeoutHttpException: typeof import("@duplojs/http-exception")["GatewayTimeoutHttpException"];
+	const HttpVersionNotSupportedHttpException: typeof import("@duplojs/http-exception")["HttpVersionNotSupportedHttpException"];
+	const VariantAlsoNegotiatesHttpException: typeof import("@duplojs/http-exception")["VariantAlsoNegotiatesHttpException"];
+	const NotExtendedHttpException: typeof import("@duplojs/http-exception")["NotExtendedHttpException"];
+	const NetworkAuthenticationRequiredHttpException: typeof import("@duplojs/http-exception")["NetworkAuthenticationRequiredHttpException"];
 }
