@@ -1,24 +1,16 @@
 import * as THREE from "three";
 import {Hook} from "../Hook";
+import {CharacterModel} from "./CharacterModel";
 
-export class Character<
-	motionsObject extends Record<string, THREE.Group<THREE.Object3DEventMap>> = any
->{
-	constructor(model: THREE.Group<THREE.Object3DEventMap>, motions: motionsObject){
-		this.model = model;
-		this.mixer = new THREE.AnimationMixer(this.model);
-		this.motions = motions;
-		this.clock = new THREE.Clock();
-
-		this.model.scale.set(0.3, 0.3, 0.3);
-	}
-
-	protected model: THREE.Group<THREE.Object3DEventMap>;
+export class Character{
 	private mixer: THREE.AnimationMixer;
-	private motions: motionsObject;
 	clock: THREE.Clock;
 
-	private currentMotionName?: keyof motionsObject;
+	private get model(){
+		return this.characterModel.getModel();
+	}
+
+	private currentMotionName?: string;
 	private currentMotion?: THREE.AnimationAction;
 
 	hooks = {
@@ -26,18 +18,29 @@ export class Character<
 		onRemove: new Hook(0),
 	};
 
+	constructor(
+		private characterModel: CharacterModel
+	){
+		this.mixer = new THREE.AnimationMixer(this.model);
+		this.clock = new THREE.Clock();
+	}
+
 	getModel(){
-		return this.model;
+		return this.characterModel.getModel();
 	}
 
 	getMixer(){
 		return this.mixer;
 	}
 
-	launchMotion(name: keyof motionsObject){
+	launchMotion(name: string){
 		if(this.currentMotionName !== name && this.currentMotion) this.currentMotion.stop();
+		
+		const animation = this.model.animations.find(a => a.name.endsWith(name));
+		if(!animation) throw new Error();
+
 		this.currentMotionName = name;
-		this.currentMotion = this.mixer.clipAction(this.motions[name].animations[0]);
+		this.currentMotion = this.mixer.clipAction(animation);
 		this.currentMotion.play();
 	}
 

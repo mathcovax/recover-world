@@ -1,9 +1,23 @@
 import {Character} from "./myThree/Character";
-import {models, motions, map} from "./load";
 import {myThree} from "./myThree";
+import {UserModel} from "./models/UserModel";
+import {map} from "./load";
 import {Map} from "./myThree/Map";
 
-const character = new Character(models["y_bot"], motions);
+const mainUserModel = new UserModel(
+	{body: 0, haire: 0}, 
+	{
+		body: {
+			skin: "#000"
+		},
+		haire: {
+			haire: "#0000FF"
+		}
+	}
+);
+await mainUserModel.load();
+
+const character = new Character(mainUserModel);
 character.hooks.onAdd.addSubscriber(() => character.launchMotion("standing"));
 myThree.addCharacter(character);
 	
