@@ -1,5 +1,5 @@
 import {GLTF} from "three/examples/jsm/Addons.js";
-import {MyThree} from "./MyThree";
+import {MyThree} from ".";
 
 export async function FBXLoader<
 	modelsObject extends Record<string, string>

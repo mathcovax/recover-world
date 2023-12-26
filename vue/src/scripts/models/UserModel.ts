@@ -4,22 +4,17 @@ import {FBXLoaderModels, FBXLoaderMotions} from "@S/myThree/FBXLoader";
 export class UserModel extends CharacterModel<
 	{
 		body: "eyes" | "skin" | "underwear" | "eyebrow" | "lips",
-		haire: "haire",
+		hair: "hair",
 	}
 >{
 	private static loadersModel = {
-		body: [
-			new FBXLoaderModels("/models/user/body/body_1.fbx"),
-			// new FBXLoaderModels("/models/user/body/2.fbx"),
-		],
-		haire: [
-			new FBXLoaderModels("/models/user/haire/haire_1.fbx"),
-			// new FBXLoaderModels("/models/user/haire/2.fbx"),
-		],
+		body: [new FBXLoaderModels("/models/user/body/body_1.fbx")],
+		hair: [new FBXLoaderModels("/models/user/hair/hair_1.fbx")],
 	};
 	private static loadersMotion = [
 		new FBXLoaderMotions("run", "/models/user/motion/run.fbx"),
 		new FBXLoaderMotions("standing", "/models/user/motion/standing.fbx"),
+		new FBXLoaderMotions("sword_attack_1", "/models/user/motion/sword_attack_1.fbx"),
 	];
 
 	get loadersModel(){

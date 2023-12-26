@@ -1,17 +1,19 @@
 import {Character} from "./myThree/Character";
-import {myThree} from "./myThree";
 import {UserModel} from "./models/UserModel";
 import {map} from "./load";
 import {Map} from "./myThree/Map";
+import {MyThree} from "./myThree";
+
+const myThree = new MyThree("#scene", {gapCamera: {x: -80, y: 200, z: 0}});
 
 const mainUserModel = new UserModel(
-	{body: 0, haire: 0}, 
+	{body: 0, hair: 0}, 
 	{
 		body: {
 			skin: "#000"
 		},
-		haire: {
-			haire: "#0000FF"
+		hair: {
+			hair: "#0000FF"
 		}
 	}
 );

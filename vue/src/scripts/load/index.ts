@@ -1,5 +1,5 @@
 import {FBXLoader} from "@S/myThree/3DLoader";
-import {MyThree} from "@S/myThree/MyThree";
+import {MyThree} from "@S/myThree";
 
 // export const models = await FBXLoader({
 // 	y_body: "/models/characters/y_body.fbx"

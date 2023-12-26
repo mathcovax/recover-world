@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {Character} from "./Character";
-import {MyThree} from "./MyThree";
+import {MyThree} from ".";
 import {Hook} from "../Hook";
 
 export class Controller{
