@@ -1,5 +1,4 @@
-import {CharacterModel} from "@S/myThree/CharacterModel";
-import {FBXLoaderModels, FBXLoaderMotions} from "@S/myThree/FBXLoader";
+import {CharacterModel, FBXLoaderModel, FBXLoaderMotion} from "@MYTHREE";
 
 export class UserModel extends CharacterModel<
 	{
@@ -8,13 +7,13 @@ export class UserModel extends CharacterModel<
 	}
 >{
 	private static loadersModel = {
-		body: [new FBXLoaderModels("/models/user/body/body_1.fbx")],
-		hair: [new FBXLoaderModels("/models/user/hair/hair_1.fbx")],
+		body: [new FBXLoaderModel("/assets/models/user/body/body_1.fbx")],
+		hair: [new FBXLoaderModel("/assets/models/user/hair/hair_1.fbx")],
 	};
 	private static loadersMotion = [
-		new FBXLoaderMotions("run", "/models/user/motion/run.fbx"),
-		new FBXLoaderMotions("standing", "/models/user/motion/standing.fbx"),
-		new FBXLoaderMotions("sword_attack_1", "/models/user/motion/sword_attack_1.fbx"),
+		new FBXLoaderMotion("run", "/assets/models/user/motion/run.fbx"),
+		new FBXLoaderMotion("standing", "/assets/models/user/motion/standing.fbx"),
+		new FBXLoaderMotion("sword_attack_1", "/assets/models/user/motion/sword_attack_1.fbx"),
 	];
 
 	get loadersModel(){

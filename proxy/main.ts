@@ -16,8 +16,8 @@ fastify.register(fastifyProxy, {
 });
 
 fastify.register(fastifyStatic, {
-	root: resolve(__dirname, "..", "models"),
-	prefix: "/models",
+	root: resolve(__dirname, "..", "assets"),
+	prefix: "/assets",
 });
 
 if(process.env.ENVIRONMENT === "DEV"){

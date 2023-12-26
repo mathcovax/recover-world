@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import {FBXLoaderModels, FBXLoaderMotions} from "./FBXLoader";
+import {FBXLoaderModel, FBXLoaderMotion} from "./loader";
 
 type CharacterSkinnedMesh = THREE.SkinnedMesh<
 	THREE.BufferGeometry, 
@@ -33,7 +33,7 @@ export abstract class CharacterModel<
 					value instanceof Array &&
 					value[indexModels[key as keysModel]]
 				){
-					const loader = value[indexModels[key as keysModel]] as FBXLoaderModels;
+					const loader = value[indexModels[key as keysModel]] as FBXLoaderModel;
 					models[key] = await loader.load();
 				}
 				else {
@@ -57,6 +57,7 @@ export abstract class CharacterModel<
 		if(!this.model || !this.body) throw new Error();
 		
 		mesh.skeleton = this.body.skeleton;
+		mesh.parent = this.model;
 		const materials = mesh.material instanceof Array ? mesh.material : [mesh.material];
 
 		Object.entries(colors || {}).forEach(([materialName, color]) => {
@@ -88,6 +89,7 @@ export abstract class CharacterModel<
 		
 		if(!body || !armature) throw new Error();
 		this.model.add(armature);
+		armature.parent = this.model;
 		this.body = body;
 
 		Object.entries(models).forEach(([key, value]) => {
@@ -107,7 +109,7 @@ export abstract class CharacterModel<
 
 	protected abstract onloadModel(model: THREE.Group): void | Promise<void>;
 
-	protected abstract get loadersModel(): Record<keysModel, FBXLoaderModels[]>;
-	protected abstract get loadersMotion():  FBXLoaderMotions[];
+	protected abstract get loadersModel(): Record<keysModel, FBXLoaderModel[]>;
+	protected abstract get loadersMotion():  FBXLoaderMotion[];
 
 }

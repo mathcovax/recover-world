@@ -27,5 +27,8 @@ export default {
 
 	btn: {
 		close: "fermer"
+	}, 
+	label: {
+		pseudo: "Pseudo",
 	}
 };

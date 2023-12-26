@@ -1,11 +1,15 @@
 import * as THREE from "three";
 import {FBXLoader, GLTFLoader} from "three/examples/jsm/Addons.js";
-import {Hook} from "../Hook";
 import {Character} from "./Character";
 import {Controller} from "./Controller";
 import {Map} from "./Map";
 
-interface MyThreeParams{
+export * from "./Character";
+export * from "./CharacterModel";
+export * from "./loader";
+export * from "./Map";
+
+export interface MyThreeParams{
 	gapCamera?: {
 		x: number,
 		y: number,
@@ -16,6 +20,7 @@ interface MyThreeParams{
 		y: number,
 		z: number,
 	},
+	backgroundImage?: THREE.Texture,
 }
 
 export class MyThree{
@@ -31,12 +36,16 @@ export class MyThree{
 		this.aspect = this.width / this.height;
 
 		this.renderer = new THREE.WebGLRenderer({canvas: this.canvas});
+
 		this.scene = new THREE.Scene();
+		if(params?.backgroundImage){
+			this.scene.background = params?.backgroundImage;
+		}
+
 		this.camera = new THREE.PerspectiveCamera(
 			this.fov,
 			this.aspect,
 		);
-
 		if(params?.gapCamera){
 			this.gapCamera = params.gapCamera;
 		}
@@ -70,8 +79,8 @@ export class MyThree{
 	private scene: THREE.Scene;
 	private camera: THREE.PerspectiveCamera;
 	private gapCamera = {
-		x: -80,
-		y: 200,
+		x: 0,
+		y: 0,
 		z: 0,
 	};
 	private positionCamera = {

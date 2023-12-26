@@ -6,8 +6,7 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue')['EffectScope']
-  const app: typeof import('./src/plugins/firebase')['app']
-  const auth: typeof import('./src/plugins/firebase')['auth']
+  const Hook: typeof import('./src/plugins/Hook')['Hook']
   const computed: typeof import('vue')['computed']
   const createApp: typeof import('vue')['createApp']
   const customRef: typeof import('vue')['customRef']
@@ -43,7 +42,6 @@ declare global {
   const onServerPrefetch: typeof import('vue')['onServerPrefetch']
   const onUnmounted: typeof import('vue')['onUnmounted']
   const onUpdated: typeof import('vue')['onUpdated']
-  const promiseObject: typeof import('./src/plugins/promiseObject')['promiseObject']
   const provide: typeof import('vue')['provide']
   const reactive: typeof import('vue')['reactive']
   const readonly: typeof import('vue')['readonly']

@@ -24,6 +24,7 @@
       "@P/*": ["./src/pages/*"],
       "@C/*": ["./src/components/*"],
       "@S/*": ["./src/scripts/*"],
+      "@MYTHREE": ["./src/myThree/index.ts"],
       "@SRC/*": ["./src/*"],
     },
   },

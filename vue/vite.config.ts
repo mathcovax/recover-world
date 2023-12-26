@@ -33,6 +33,7 @@ export default defineConfig({
 			"@P": resolve(__dirname, "src", "pages"),
 			"@C": resolve(__dirname, "src", "components"),
 			"@S": resolve(__dirname, "src", "scripts"),
+			"@MYTHREE": resolve(__dirname, "src", "myThree", "index.ts"),
 			"@SRC": resolve(__dirname, "src"),
 		}
 	},

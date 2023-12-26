@@ -1,8 +1,5 @@
-import {Character} from "./myThree/Character";
 import {UserModel} from "./models/UserModel";
-import {map} from "./load";
-import {Map} from "./myThree/Map";
-import {MyThree} from "./myThree";
+import {Character, Map, MyThree} from "@MYTHREE";
 
 const myThree = new MyThree("#scene", {gapCamera: {x: -80, y: 200, z: 0}});
 
@@ -32,7 +29,7 @@ controller.hooks.onStopMove.addSubscriber(() => character.launchMotion("standing
 // 	new THREE.MeshLambertMaterial()
 // );
 // myThree.addModel(cube);
-
+const map = await MyThree.loadGLTF("/models/maps/floor.glb");
 map.scene.scale.set(20, 20, 20);
 myThree.setMap(new Map(map.scene));
 	

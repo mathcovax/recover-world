@@ -32,13 +32,13 @@ dt.addHookInfo("user.info", () => {
 	router.push({name: "game"});
 });
 
-//wait initialize router else router.currentRoute.value.path is allways "/"
-await new Promise(resolve => setTimeout(resolve, 200));
-
 const {getInfo} = userStore();
 //try to get user infos
-getInfo().then(connected => {
+getInfo().then(async connected => {
 	if(!connected){
+		//wait initialize router else router.currentRoute.value.path is allways "/"
+		await new Promise(resolve => setTimeout(resolve, 1000));
+
 		//registration page can handle the redirection alone
 		if(router.currentRoute.value.path !== "/register")router.push({name: "login"});
 	}

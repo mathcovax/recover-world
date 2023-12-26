@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import {Hook} from "../Hook";
+import {Hook} from "../plugins/Hook";
 import {CharacterModel} from "./CharacterModel";
 
 export class Character{
