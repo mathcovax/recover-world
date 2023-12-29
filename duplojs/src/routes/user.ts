@@ -13,7 +13,11 @@ export default (path: string) =>
 			catch: (res, info) => {
 				throw new NotFoundHttpException(info);
 			},
-			indexing: "user"
+			indexing: "user",
+			options: {
+				models: true,
+				colors: true
+			}
 		}
 	)
 	.handler(({d: {user}}) => {

@@ -2,6 +2,7 @@ import {checkGoogleIdToken} from "@checkers/token";
 import {checkUserExist, userInput} from "@checkers/user";
 import {prisma} from "@plugins/prisma";
 import {generateAccessToken} from "@plugins/token";
+import {colorsZod, modelsZod} from "@utils/userModel";
 
 /* PATH : /register */
 export default (path: string) => 
@@ -9,7 +10,9 @@ export default (path: string) =>
 	.declareRoute("POST", path)
 	.extract({
 		body: {
-			pseudo: zod.string().min(3).max(30),
+			pseudo: zod.string().min(3).max(30).toLowerCase(),
+			models: modelsZod,
+			colors: colorsZod,
 			googleIdToken: zod.string(),
 		}
 	})
@@ -45,11 +48,13 @@ export default (path: string) =>
 			}
 		}
 	)
-	.handler(async({d: {pseudo, userEmail: email}}) => {
+	.handler(async({d: {pseudo, userEmail: email, colors, models}}) => {
 		const {id: userId} = await prisma.user.create({
 			data: {
 				pseudo,
 				email,
+				colors: JSON.stringify(colors),
+				models: JSON.stringify(models),
 			},
 			select: {
 				id: true

@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import {Character, MyThree} from "@MYTHREE";
 import {RegisterUserModel} from "@S/models/RegisterUserModel";
-import {registersSelectColors} from "@SRC/composables/registerSelectColors";
+import {registerSelectColors} from "@SRC/composables/registerSelectColors";
 import * as zod from "zod";
 
-const googleIdToken = router.currentRoute.value.query.googleIdToken as string | undefined;
-if(!googleIdToken) router.push({name: "login"});
+const googleIdToken = router.currentRoute.value.query.googleIdToken as string;
 
 const {setToken, getInfo} = userStore();
+const isFormValid = ref(false);
 const pseudo = ref("");
-const {colors, selectedColor} = registersSelectColors();
-const selectedModel = reactive({body: 0, hair: 0});
+const {colors, selectedColors} = registerSelectColors();
+const selectedModels = reactive({body: 0, hair: 0});
 let myThree: MyThree;
 let userModel: RegisterUserModel;
 let userCharacter: Character;
@@ -18,10 +18,14 @@ let userCharacter: Character;
 const pseudoRule = toFormRules(zod.string().min(3, "minimume 3 char").max(30, "maximume 30 char"));
 
 async function submited(){
+	if(!isFormValid.value) return;
+
 	await dt.post<string>(
 		"/register", 
 		{
 			pseudo: pseudo.value, 
+			models: selectedModels,
+			colors: selectedColors,
 			googleIdToken,
 		}
 	)
@@ -59,22 +63,15 @@ onMounted(async() => {
 });
 
 const updateModels = async() => {
-	if(selectedModel.body > RegisterUserModel.loadersModel.body.length - 1){
-		selectedModel.body = 0;
-		return;
-	}
-	else if(selectedModel.body < 0){
-		selectedModel.body = RegisterUserModel.loadersModel.body.length - 1;
-		return;
-	}
-
-	if(selectedModel.hair > RegisterUserModel.loadersModel.hair.length - 1){
-		selectedModel.hair = 0;
-		return;
-	}
-	else if(selectedModel.hair < 0){
-		selectedModel.hair = RegisterUserModel.loadersModel.hair.length - 1;
-		return;
+	for(const [key, value] of objectEntries(selectedModels)){
+		if(value > RegisterUserModel.loadersModel[key].length - 1){
+			selectedModels[key] = 0;
+			return;
+		}
+		else if(value < 0){
+			selectedModels[key] = RegisterUserModel.loadersModel[key].length - 1;
+			return;
+		}
 	}
 
 	let oldUserCharacter: Character | undefined;
@@ -84,19 +81,19 @@ const updateModels = async() => {
 
 	userModel = new RegisterUserModel(
 		{
-			body: selectedModel.body, 
-			hair: selectedModel.hair
+			body: selectedModels.body, 
+			hair: selectedModels.hair
 		},
 		{
 			body: {
-				skin: selectedColor.skin,
-				lips: selectedColor.lips,
-				eyes: selectedColor.eyes,
-				eyebrow: selectedColor.hair,
-				underwear: selectedColor.underwear,
+				skin: selectedColors.skin,
+				lips: selectedColors.lips,
+				eyes: selectedColors.eyes,
+				eyebrow: selectedColors.hair,
+				underwear: selectedColors.underwear,
 			},
 			hair: {
-				hair: selectedColor.hair,
+				hair: selectedColors.hair,
 			}
 		}
 	);
@@ -110,38 +107,38 @@ const updateModels = async() => {
 };
 
 watch(
-	selectedModel,
+	selectedModels,
 	updateModels
 );
 
 watch(
 	() => 
-		selectedColor.skin + 
-		selectedColor.lips +
-		selectedColor.eyes +
-		selectedColor.eyebrow +
-		selectedColor.underwear,
+		selectedColors.skin + 
+		selectedColors.lips +
+		selectedColors.eyes +
+		selectedColors.eyebrow +
+		selectedColors.underwear,
 	() => {
 		userModel.setColor(
 			"body", 
 			{
-				skin: selectedColor.skin,
-				lips: selectedColor.lips,
-				eyes: selectedColor.eyes,
-				eyebrow: selectedColor.eyebrow,
-				underwear: selectedColor.underwear,
+				skin: selectedColors.skin,
+				lips: selectedColors.lips,
+				eyes: selectedColors.eyes,
+				eyebrow: selectedColors.eyebrow,
+				underwear: selectedColors.underwear,
 			}
 		);
 	}
 );
 
 watch(
-	() => selectedColor.hair,
+	() => selectedColors.hair,
 	() => {
 		userModel.setColor(
 			"hair", 
 			{
-				hair: selectedColor.hair
+				hair: selectedColors.hair
 			}
 		);
 	}
@@ -159,6 +156,7 @@ watch(
 	<VForm
 	@submit.prevent="submited"
 	class="absolute w-full h-full top-0 left-0 p-[10px] grid grid-cols-3"
+	v-model="isFormValid"
 	>
 		<div class="col-span-1 flex flex-col gap-[10px]">
 			<div
@@ -172,10 +170,10 @@ watch(
 					v-for="color of value"
 					class="w-[20px] h-[20px]"
 					:class="{
-						'!border-black border-2': selectedColor[key] === color
+						'!border-black border-2': selectedColors[key] === color
 					}"
 					:style="{background: color}"
-					@click="selectedColor[key] = color"
+					@click="selectedColors[key] = color"
 					/>
 				</div>
 			</div>
@@ -200,39 +198,24 @@ watch(
 		</div>
 
 		<div class="col-span-1 flex flex-col items-end">
-			<div class="flex items-center gap-[10px]">
+			<div
+			v-for="(value, key) in selectedModels"
+			class="flex items-center justify-between gap-[5px] w-[150px]"
+			>
 				<VBtn
 				density="compact"
 				icon="mdi-arrow-left-bold-circle"
 				elevation="0"
-				@click="selectedModel.hair--"
+				@click="selectedModels[key]--"
 				/>
 				
-				<span>{{ $t("register.color.hair") }} {{ selectedModel.hair + 1 }}</span>
+				<span>{{ $t(`register.${key}`, {number: value + 1}) }}</span>
 
 				<VBtn
 				density="compact"
 				icon="mdi-arrow-right-bold-circle"
 				elevation="0"
-				@click="selectedModel.hair++"
-				/>
-			</div>
-
-			<div class="flex items-center gap-[10px]">
-				<VBtn
-				density="compact"
-				icon="mdi-arrow-left-bold-circle"
-				elevation="0"
-				@click="selectedModel.body--"
-				/>
-				
-				<span>{{ $t("register.body") }} {{ selectedModel.body + 1 }}</span>
-
-				<VBtn
-				density="compact"
-				icon="mdi-arrow-right-bold-circle"
-				elevation="0"
-				@click="selectedModel.body++"
+				@click="selectedModels[key]++"
 				/>
 			</div>
 		</div>

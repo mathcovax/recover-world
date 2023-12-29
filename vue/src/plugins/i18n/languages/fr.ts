@@ -31,7 +31,8 @@ export default {
 			eyebrow: "Surcile",
 			underwear: "Sous vétement"
 		},
-		body: "Corp",
+		body: "Corp {number}",
+		hair: "Cheveux {number}"
 	},
 
 	btn: {

@@ -8,9 +8,9 @@ export function generateAccessToken(userId: string){
 	);
 }
 
-export function verifAccessToken(token: string){
+export function verifAccessToken(token?: string){
 	const {userId} = jwt.verify(
-		token, 
+		token || "", 
 		env.ACCESS_TOKEN_KEY
 	) as any;
 

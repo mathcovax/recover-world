@@ -6,7 +6,9 @@ import Loader from "@SRC/fixed/loader.vue";
 <template>
 	<Loader/>
 
-	<RouterView/>
-
 	<Toast/>
+
+	<div class="absolute w-full h-full">
+		<RouterView/>
+	</div>
 </template>

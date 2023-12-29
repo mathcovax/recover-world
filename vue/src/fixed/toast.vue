@@ -6,10 +6,10 @@ const {toasts} = fixedStore();
 </script>
 
 <template>
-	<div class="fixed w-full h-full -z-10 flex flex-col items-center justify-end top-0 left-0 gap-[10px] p-[10px]">
+	<div class="absolute w-full h-full flex flex-col items-center justify-end top-0 left-0 gap-[10px] p-[10px]">
 		<div
 		v-for="toast of toasts"
-		class="z-10 toast min-w-[350px] flex justify-between items-center p-[8px] gap-[10px] bg-[#333] rounded-[4px]"
+		class="z-40 toast min-w-[350px] flex justify-between items-center p-[8px] gap-[10px] bg-[#333] rounded-[4px]"
 		>
 			<span class="flex gap-[10px] items-center overflow-hidden text-ellipsis text-[white]">
 				<Icon

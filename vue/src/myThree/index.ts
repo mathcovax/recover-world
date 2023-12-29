@@ -39,7 +39,10 @@ export class MyThree{
 		this.width = this.canvas.offsetWidth;
 		this.aspect = this.width / this.height;
 
-		this.renderer = new THREE.WebGLRenderer({canvas: this.canvas, alpha: true});
+		this.renderer = new THREE.WebGLRenderer({
+			canvas: this.canvas, 
+			alpha: !!params?.backgroundColor?.alpha
+		});
 		if(params?.backgroundColor){
 			this.renderer.setClearColor(
 				params.backgroundColor.color, 

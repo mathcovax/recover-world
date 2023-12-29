@@ -4,7 +4,7 @@ import {verifAccessToken} from "@plugins/token";
 export const checkAccessToken = duplo.createChecker(
 	"CheckAccessToken",
 	{
-		handler(token: string, output, options){
+		handler(token: string | undefined, output, options){
 			try {
 				const userId = verifAccessToken(token);
 				return output("token.valid", userId);

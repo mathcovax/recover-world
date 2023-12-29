@@ -1,3 +1,4 @@
+import {fixedStore} from "@SRC/fixed/fixedStore";
 import {createRouter, RouteRecordRaw, createWebHistory} from "vue-router";
 
 const routes: RouteRecordRaw[] = [
@@ -14,7 +15,7 @@ const routes: RouteRecordRaw[] = [
 	{
 		path: "/register",
 		name: "register",
-		component: () => import("@P/auth/register.vue")
+		component: () => import("@P/auth/register.vue"),
 	},
 ];
 
@@ -23,10 +24,11 @@ export const router = createRouter({
 	routes,
 });
 
-router.beforeEach(() => {
+router.beforeEach(async(to) => {
+	const result = await dt.get(`/entry${to.fullPath}`).result;
 
-});
-
-router.afterEach(() => {
-
+	if(result.info === "user.canEntry"){
+		return true;
+	}
+	else return {name: "login"};
 });

@@ -1,4 +1,4 @@
-export function registersSelectColors(){
+export function registerSelectColors(){
 	const skin = [
 		"#FCE8D5",
 		"#FAD6A5",
@@ -64,7 +64,7 @@ export function registersSelectColors(){
 		"#F5F5DC"
 	];
 
-	const selectedColor = reactive<{
+	const selectedColors = reactive<{
 		skin: string, 
 		hair: string,
 		lips: string,
@@ -89,6 +89,6 @@ export function registersSelectColors(){
 			eyebrow: hair,
 			underwear,
 		},
-		selectedColor
+		selectedColors
 	};
 }

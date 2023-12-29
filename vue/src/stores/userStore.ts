@@ -14,10 +14,12 @@ export const userStore = defineStore(
 		const data = reactive<DataUserStore>({isConnected: false});
 		const getInfo = async() => {
 			await dt.get<UserInfoRequest>("/user", undefined, {disabledToast: true})
-			.info("user.info", ({email, pseudo}) => {
+			.info("user.info", ({email, pseudo, models, colors}) => {
 				data.isConnected = true;
 				data.email = email;
 				data.pseudo = pseudo;
+				data.models = JSON.parse(models);
+				data.colors = JSON.parse(colors);
 			})
 			.result;
 			

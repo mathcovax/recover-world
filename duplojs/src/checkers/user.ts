@@ -16,9 +16,27 @@ export const checkUserExist = duplo.createChecker(
 			if(key === "emailOrPseudo"){
 				where = {
 					OR: [
-						{email: value.email},
-						{pseudo: value.pseudo}
+						{
+							email: {
+								equals: value.email,
+								mode: "insensitive"
+							}
+						},
+						{
+							pseudo: {
+								equals: value.pseudo,
+								mode: "insensitive"
+							}
+						}
 					]
+				};
+			}
+			else if(["email", "pseudo"].includes(key)){
+				where = {
+					[key]: {
+						equals: value,
+						mode: "insensitive"
+					}
 				};
 			}
 			else {
@@ -31,6 +49,8 @@ export const checkUserExist = duplo.createChecker(
 					id: options.id,
 					email: options.email,
 					pseudo: options.pseudo,
+					models: options.models,
+					colors: options.colors,
 				}
 			});
 
@@ -42,6 +62,8 @@ export const checkUserExist = duplo.createChecker(
 			id: true,
 			email: false,
 			pseudo: false,
+			models: false,
+			colors: false,
 		}
 	}
 );

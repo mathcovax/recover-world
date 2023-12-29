@@ -33,7 +33,7 @@ async function sign(){
 </script>
 
 <template>
-	<div>
+	<div class="absolute">
 		<button @click="sign">
 			{{ $t("login.btn.connect") }}
 		</button>

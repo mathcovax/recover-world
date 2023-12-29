@@ -8,7 +8,7 @@ const {loader} = fixedStore();
 <template>
 	<div
 	v-show="loader.show"
-	class="w-full h-full top-0 left-0 fixed bg-[rgba(0,0,0,0.4)] flex justify-center items-center"
+	class="w-full h-full top-0 left-0 fixed bg-[rgba(0,0,0,0.4)] flex justify-center items-center z-50"
 	>
 		<svg
 		class="svgLoading"

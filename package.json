@@ -11,7 +11,8 @@
     "dev-duplojs": "npm -w duplojs run dev",
     "dev-vue": "npm -w vue run dev",
     "dev-proxy": "npm -w proxy run dev",
-    "dev-migrate": "docker compose exec duplojs npx prisma migrate dev --name init"
+    "dev-migrate": "docker compose exec duplojs npx prisma migrate dev --name init",
+	"studio": "docker compose exec duplojs npx prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^5.7.0",

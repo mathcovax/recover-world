@@ -40,11 +40,8 @@ const {getInfo} = userStore();
 //try to get user infos
 getInfo().then(async connected => {
 	if(!connected){
-		//wait initialize router else router.currentRoute.value.path is allways "/"
-		await new Promise(resolve => setTimeout(resolve, 1000));
-
 		//registration page can handle the redirection alone
-		if(router.currentRoute.value.path !== "/register")router.push({name: "login"});
+		if(!window.location.pathname.startsWith("/register"))router.push({name: "login"});
 	}
 	else {
 		//redirect to main page

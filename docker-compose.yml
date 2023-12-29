@@ -21,6 +21,8 @@ services:
     working_dir: /home/node/recover-world
     user: 1000:1000
     command: npm run dev-duplojs
+    ports:
+      - 5555:5555
     depends_on:
       installer:
         condition: service_completed_successfully
