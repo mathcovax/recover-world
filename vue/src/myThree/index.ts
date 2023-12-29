@@ -21,6 +21,10 @@ export interface MyThreeParams{
 		z: number,
 	},
 	backgroundImage?: THREE.Texture,
+	backgroundColor?: {
+		color: string,
+		alpha?: number,
+	}
 }
 
 export class MyThree{
@@ -35,8 +39,14 @@ export class MyThree{
 		this.width = this.canvas.offsetWidth;
 		this.aspect = this.width / this.height;
 
-		this.renderer = new THREE.WebGLRenderer({canvas: this.canvas});
-
+		this.renderer = new THREE.WebGLRenderer({canvas: this.canvas, alpha: true});
+		if(params?.backgroundColor){
+			this.renderer.setClearColor(
+				params.backgroundColor.color, 
+				params.backgroundColor.alpha
+			);
+		}
+		
 		this.scene = new THREE.Scene();
 		if(params?.backgroundImage){
 			this.scene.background = params?.backgroundImage;
@@ -155,6 +165,10 @@ export class MyThree{
 		if(index !== -1) this.characters.slice(index, 1);
 		this.removeModel(character.getModel());
 		character.hooks.onRemove.launchSubscriber();
+	}
+
+	hasCharacter(character: Character){
+		return !!this.characters.find(char => char === character);
 	}
 
 	private characterMotion(){

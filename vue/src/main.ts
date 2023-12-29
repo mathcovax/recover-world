@@ -10,6 +10,7 @@ import "vuetify/styles";
 import {createVuetify} from "vuetify";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
+import "@mdi/font/css/materialdesignicons.css";
 import {i18n, setLocaleMessages} from "@SRC/plugins/i18n";
 
 //create vue app
@@ -19,7 +20,10 @@ createApp(App)
 .use(i18n)
 .use(createVuetify({
 	components,
-	directives
+	directives,
+	icons: {
+		defaultSet: "mdi",
+	}
 }))
 .mount("#app");
 

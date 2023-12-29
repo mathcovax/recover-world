@@ -1,13 +1,17 @@
 import {Loader} from "./main";
+import {FBXLoader} from "three/examples/jsm/Addons.js";
 
 export class FBXLoaderModel extends Loader<THREE.Group>{
-	load(){
-		return Loader.FBX.loadAsync(this.src);
+	private static FBXLoader = new FBXLoader();
+
+	async load(){
+		const arrayBuffer = await this.fetch();
+		return FBXLoaderModel.FBXLoader.parse(arrayBuffer, this.src);
 	}
 }
 
 export class FBXLoaderMotion extends Loader<THREE.AnimationClip>{
-	private savedMotion: Record<string, THREE.AnimationClip> = {};
+	private static FBXLoader = new FBXLoader();
 
 	constructor(
 		protected name: string,
@@ -17,27 +21,11 @@ export class FBXLoaderMotion extends Loader<THREE.AnimationClip>{
 	}
 
 	async load(){
-		if(this.savedMotion[this.src]) return this.savedMotion[this.src];
-		const group = await Loader.FBX.loadAsync(this.src);
+		const arrayBuffer = await this.fetch();
+		const group = FBXLoaderMotion.FBXLoader.parse(arrayBuffer, this.src);
 		const motion = group.animations[0];
 		if(!motion) throw new Error();
 		motion.name = this.name;
-		return this.savedMotion[this.src] = motion;
-	}
-}
-
-export class FBXLoaderMesh extends Loader<THREE.Object3D>{
-	constructor(
-		protected name: string,
-		src: string
-	){
-		super(src);
-	}
-
-	async load(){
-		const group = await Loader.FBX.loadAsync(this.src);
-		const mesh = group.children.find(a => a.name === this.name);
-		if(!mesh) throw new Error();
-		return mesh;
+		return motion;
 	}
 }

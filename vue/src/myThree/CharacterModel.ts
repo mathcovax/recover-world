@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import {FBXLoaderModel, FBXLoaderMotion} from "./loader";
 
-type CharacterSkinnedMesh = THREE.SkinnedMesh<
+export type CharacterSkinnedMesh = THREE.SkinnedMesh<
 	THREE.BufferGeometry, 
 	THREE.MeshPhongMaterial[] | THREE.MeshPhongMaterial
 >;

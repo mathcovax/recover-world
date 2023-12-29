@@ -22,7 +22,16 @@ export default {
 	register: {
 		btn: {
 			register: "S'inscrire"
-		}
+		},
+		color: {
+			skin: "Peau", 
+			hair: "Cheveux",
+			lips: "Lévres",
+			eyes: "Yeux",
+			eyebrow: "Surcile",
+			underwear: "Sous vétement"
+		},
+		body: "Corp",
 	},
 
 	btn: {

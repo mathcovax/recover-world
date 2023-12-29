@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   installer:
-    image: node:20.10.0-alpine
+    image: node:18.19.0-alpine
     volumes:
       - ./:/home/node/recover-world
     environment:
@@ -13,7 +13,7 @@ services:
       - postgres
 
   duplojs:
-    image: node:20.10.0-alpine
+    image: node:18.19.0-alpine
     volumes:
       - ./:/home/node/recover-world
     environment:
@@ -26,7 +26,7 @@ services:
         condition: service_completed_successfully
     
   vue:
-    image: node:20.10.0-alpine
+    image: node:18.19.0-alpine
     volumes:
       - ./:/home/node/recover-world
     environment:
@@ -39,7 +39,7 @@ services:
         condition: service_completed_successfully
   
   proxy:
-    image: node:20.10.0-alpine
+    image: node:18.19.0-alpine
     volumes:
       - ./:/home/node/recover-world
     environment:
